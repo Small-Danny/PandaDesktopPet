@@ -656,7 +656,7 @@
     {
       "path": "asset_tests/test_policy_blacklist_guard.py",
       "source_path": "tests/test_policy_blacklist_guard.py",
-      "sha256": "c90f3a1bd57573ad8e818cca6ac47fa22b4960fa5544cdc99dcf27fa5f62df5b"
+      "sha256": "4db177d952b8ee1c08544aaaef4555e33380161453bd60fc6bb6c351da23b7d7"
     },
     {
       "path": "tests/test_preserved_animation_canvas.py",

@@ -66,7 +66,6 @@ KNOWN_FLAT_EDGE_PENDING = frozenset({
     "bomi/lifestyle_v6_2/bomi_variety_belly_laugh.png",
     "bomi/sequence_campfire_v6/bomi_campfire_blow_marshmallow.png",
     "bomi/situational_v6_2/bomi_chef_stew_pot.png",
-    "chorong/situational_v6_2/chorong_headband_cozy.png",
     "chorong/stage2_20261108/christmas_gift/frame_01.png",
     "chorong/stage2_20261108/christmas_gift/frame_04.png",
     "eunji/sequence_hug_side_v7/eunji_hug_side_01.png",
