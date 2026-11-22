@@ -1,0 +1,1203 @@
+{
+  "schema_version": 1,
+  "include_assets": false,
+  "documentation_screenshots": [
+    "docs/screenshots/desktop_interaction.jpg",
+    "docs/screenshots/fortune_room.jpg",
+    "docs/screenshots/standby_stage.jpg"
+  ],
+  "audit": [],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "source_path": ".gitattributes",
+      "sha256": "2d55505bf942e8542ad5eeb79b38060e8203f04e83afc3ed059787836913b8e2"
+    },
+    {
+      "path": ".gitignore",
+      "source_path": ".gitignore",
+      "sha256": "bb2e39a8ecfff728b4db650c94f1589c4328c57a882ad325bc36221d00af2842"
+    },
+    {
+      "path": "ASSETS-LICENSE.md",
+      "source_path": "ASSETS-LICENSE.md",
+      "sha256": "a7526e3b51dabe351d40c11953504a2c545e81e300c6ed30b9014876aa8bb8a7"
+    },
+    {
+      "path": "LICENSE",
+      "source_path": "LICENSE",
+      "sha256": "97bd796914915746708065f5913b72666fd09658df90a5c89593e43d131c4320"
+    },
+    {
+      "path": "LaunchPandaPet.bat",
+      "source_path": "LaunchPandaPet.bat",
+      "sha256": "be8dd7a7d0f18e92000bd9fb29ea6be0050f49d901898f5980eeeb674cada5b0"
+    },
+    {
+      "path": "PandaDesktopPet.spec",
+      "source_path": "PandaDesktopPet.spec",
+      "sha256": "764627b6576404b6644456a67edbf0904092cec1fe92d9250cbc9294c7ddc1a4"
+    },
+    {
+      "path": "README.md",
+      "source_path": "README.md",
+      "sha256": "73dc1b39d727c0e9350e2d7d2d9627920ca7dc5a3d6847d375466ed64a5d1df0"
+    },
+    {
+      "path": "README_PORTABLE.txt",
+      "source_path": "README_PORTABLE.txt",
+      "sha256": "d0266a86e08cc1f24f20078fcf364c16189ba86dd04f8d0ba661190e8504e69a"
+    },
+    {
+      "path": "app/action_cache.py",
+      "source_path": "app/action_cache.py",
+      "sha256": "d913ead050e6e0e1b59790d63827e67fe3a92f015bcbacfeb1784bbfa03d1b07"
+    },
+    {
+      "path": "app/action_frames.py",
+      "source_path": "app/action_frames.py",
+      "sha256": "66a7a24e4da18c97019623df1d3842993a5623563a94b25071becc8ba3a0ae47"
+    },
+    {
+      "path": "app/anniversary_scene.py",
+      "source_path": "app/anniversary_scene.py",
+      "sha256": "0a73c72d33e57040814ba3024abce7981c38e69979fe3a9adec5271bc7c502f3"
+    },
+    {
+      "path": "app/asset_images.py",
+      "source_path": "app/asset_images.py",
+      "sha256": "2602b7edcc26de76430b52720153eb75be4052c0c7f19afbc0f6a7e2a590c468"
+    },
+    {
+      "path": "app/birthday_dialog.py",
+      "source_path": "app/birthday_dialog.py",
+      "sha256": "e93eecc31523273fd74979f9830f20bb0348ab92f34d4de41ae8c23c461556a0"
+    },
+    {
+      "path": "app/bubble.py",
+      "source_path": "app/bubble.py",
+      "sha256": "7dbf946d142fac5354779122457eb58ca18c1c6ae5cdd89f8023e118a088e662"
+    },
+    {
+      "path": "app/bubble_art.py",
+      "source_path": "app/bubble_art.py",
+      "sha256": "95bbe2b6a13177389e6816fe08ace023cb08fdc794ea9891df1413e060917d0e"
+    },
+    {
+      "path": "app/bubble_layout.py",
+      "source_path": "app/bubble_layout.py",
+      "sha256": "9dbf8ea231129c5f7bba37f5126f099ca9a39805b169d9af4409bd4850d93b2e"
+    },
+    {
+      "path": "app/bubble_themes.py",
+      "source_path": "app/bubble_themes.py",
+      "sha256": "50254f9ae433bc56b15b60ad79b7cad086d44bfc3cfd2026507543d800aa91f7"
+    },
+    {
+      "path": "app/cameo_view.py",
+      "source_path": "app/cameo_view.py",
+      "sha256": "74282e89b7fbe5577cf92a3131dd8e509ae286d511e9cc517d085ed843b5f1a5"
+    },
+    {
+      "path": "app/cursor_manager.py",
+      "source_path": "app/cursor_manager.py",
+      "sha256": "0e8aff7bdb8a8d55183c60fbd78d94b3091fe7bfd0aa839c3a8e22227950c43b"
+    },
+    {
+      "path": "app/daily_actions.py",
+      "source_path": "app/daily_actions.py",
+      "sha256": "1bb1768ffc753afe40da2e64150b868218698cc0fac21bac520229ca4951aea1"
+    },
+    {
+      "path": "app/desktop_warmup.py",
+      "source_path": "app/desktop_warmup.py",
+      "sha256": "559aaccbc071db9826dc94b56abb4dbd0aff0a100d1ec8390fcdc99659cfa4dd"
+    },
+    {
+      "path": "app/dome_stage.py",
+      "source_path": "app/dome_stage.py",
+      "sha256": "55c68d87871674814a99ebeb8babb4874b8a1277887887f82cca578ba1b149c8"
+    },
+    {
+      "path": "app/engine/__init__.py",
+      "source_path": "app/engine/__init__.py",
+      "sha256": "4e1d6f06ee829db6ab68c55a866bad1c51c0f6bdb42e2d3128a2418fd3f30c53"
+    },
+    {
+      "path": "app/engine/asset_policy.py",
+      "source_path": "app/engine/asset_policy.py",
+      "sha256": "9ef05a4e1c61d5453cf772e95a7b6316d9cd525aef9edff9cc235ba60199694b"
+    },
+    {
+      "path": "app/engine/assets.py",
+      "source_path": "app/engine/assets.py",
+      "sha256": "c4cc4a8ce39e0edc2746cac987c3edad0c60e16b0d09beb6d74aafcc31751671"
+    },
+    {
+      "path": "app/engine/calendar.py",
+      "source_path": "app/engine/calendar.py",
+      "sha256": "5ad47943f0bc7799fa7bad640ce48840489b9ea1efa9a390df30b02579f371d7"
+    },
+    {
+      "path": "app/engine/cameo.py",
+      "source_path": "app/engine/cameo.py",
+      "sha256": "6dcd74dd526d390fc4c001844c71764d295398a4393de8cb7f9114de0779325d"
+    },
+    {
+      "path": "app/engine/contracts.py",
+      "source_path": "app/engine/contracts.py",
+      "sha256": "236a9a18ca06a0e00d6ba72619a9028414f56553c6df3014c60e448aa13720e6"
+    },
+    {
+      "path": "app/engine/coordinator.py",
+      "source_path": "app/engine/coordinator.py",
+      "sha256": "72060b60d2b0c8d02677d1750d50574e162a25cf2cc8039975a52b68794e5f80"
+    },
+    {
+      "path": "app/engine/speech_queue.py",
+      "source_path": "app/engine/speech_queue.py",
+      "sha256": "bb0cd3469b0fa416213f424dd274557ce923066373c4c3bba8ccb52e61116d04"
+    },
+    {
+      "path": "app/festival_greetings.py",
+      "source_path": "app/festival_greetings.py",
+      "sha256": "b42cc24d8c40960915f7529e7a7af061619ffb0b53ad9babff1ecc83c9e930a2"
+    },
+    {
+      "path": "app/food_log.py",
+      "source_path": "app/food_log.py",
+      "sha256": "2f0ec862f052f79939500e41017d9002431d9fcc284571ee37f14b6fc746d145"
+    },
+    {
+      "path": "app/food_panel.py",
+      "source_path": "app/food_panel.py",
+      "sha256": "528f1eb8965a0cf88922854c56f26badcf4a447482d00110144d77e0b1db2941"
+    },
+    {
+      "path": "app/foods.py",
+      "source_path": "app/foods.py",
+      "sha256": "9873ad284f7c7e08ef0db4b6fd8d7d4b5cc40e8f258834f92d9064262d8feebf"
+    },
+    {
+      "path": "app/fortune_cards.py",
+      "source_path": "app/fortune_cards.py",
+      "sha256": "d2f07071453c12450bc3543134472de71d0c3a22a27f8520d94445c8bb2873a8"
+    },
+    {
+      "path": "app/fortune_reading.py",
+      "source_path": "app/fortune_reading.py",
+      "sha256": "2896578d067f59f9ccdb540eb3e7cc99dd5f95a06f2fb10b81192c3b686775b2"
+    },
+    {
+      "path": "app/fortune_room.py",
+      "source_path": "app/fortune_room.py",
+      "sha256": "45b8e18d35e81721d492d803bfdcb72228df6bd342ef2a0c3564bd73b602404c"
+    },
+    {
+      "path": "app/group_celebration.py",
+      "source_path": "app/group_celebration.py",
+      "sha256": "1f14dcc7f56666266a1f4d174fadf73d1689579dad7f00bfb1cddfb3f9d5e9ff"
+    },
+    {
+      "path": "app/hotkey.py",
+      "source_path": "app/hotkey.py",
+      "sha256": "aa4e3fb140aefcedcc37e46512631301cf5ad2d8322de5233b156082bd9cd530"
+    },
+    {
+      "path": "app/i18n.py",
+      "source_path": "app/i18n.py",
+      "sha256": "780604724641073d495fce10b2ed6ec6698b4194f20f53350d51cb9c89e5b4ec"
+    },
+    {
+      "path": "app/main.py",
+      "source_path": "app/main.py",
+      "sha256": "914482feb71de308d0ce77a87710c95c37e84cf632f862b6d6de2d00f32917a2"
+    },
+    {
+      "path": "app/new_year_countdown.py",
+      "source_path": "app/new_year_countdown.py",
+      "sha256": "083180ff9e7101b000de4e6d81c5ab1dddfb7c5c5801eca0318011ed0e551a8d"
+    },
+    {
+      "path": "app/notif_guide.py",
+      "source_path": "app/notif_guide.py",
+      "sha256": "f8fd0e3fe300220c62104c9a5b5cdc3f5b2214d6815763d0ed3ccbb52e958618"
+    },
+    {
+      "path": "app/notifications.py",
+      "source_path": "app/notifications.py",
+      "sha256": "e4b718941c769c5d695f3b5f98ee901e2b4aba94c581a42f076d705dd7982d7f"
+    },
+    {
+      "path": "app/paths.py",
+      "source_path": "app/paths.py",
+      "sha256": "ffd3d23b81968e51f53beb82c9435e7939a0e8842725b455ee6eab166e36273a"
+    },
+    {
+      "path": "app/personalities.py",
+      "source_path": "app/personalities.py",
+      "sha256": "aa961e69e39f0d1421b8f7eb4bc62944a7170fde38cc139e2127fab70d439546"
+    },
+    {
+      "path": "app/pink_context_menu.py",
+      "source_path": "app/pink_context_menu.py",
+      "sha256": "00fba5a55ac5523e7e8758bc4bc8d74501c020004b7e94385c3bb64cc5bb6359"
+    },
+    {
+      "path": "app/platform/__init__.py",
+      "source_path": "app/platform/__init__.py",
+      "sha256": "361501f98ad8901e4fcfba8b24831319778783c9b5a89eb8f0d429b4cb1890ec"
+    },
+    {
+      "path": "app/platform/layered_surface.py",
+      "source_path": "app/platform/layered_surface.py",
+      "sha256": "6f77f7c13ad6d45fd94697d9970748440415aa4798603a4c100b5bfe6de9d843"
+    },
+    {
+      "path": "app/platform/win32.py",
+      "source_path": "app/platform/win32.py",
+      "sha256": "238b954d5b3af915b24b79c9adecc48010c1f9c00443e1f53409825df437e354"
+    },
+    {
+      "path": "app/profile_card.py",
+      "source_path": "app/profile_card.py",
+      "sha256": "7e1100d69319c0079c9cf8a2cbd69d7db432ea33cad2eb7e8d04d969b2d57c64"
+    },
+    {
+      "path": "app/resource_store.py",
+      "source_path": "app/resource_store.py",
+      "sha256": "df94fbeb2846bbcad6b1afd9ead0c85e7b39a74af8a6cf29066fd42759d1f4b9"
+    },
+    {
+      "path": "app/settings_panel.py",
+      "source_path": "app/settings_panel.py",
+      "sha256": "ca352f1a1cd2529d68343141487f90d6eff977661408d7b56343f1eae94f42d7"
+    },
+    {
+      "path": "app/sprite_polish.py",
+      "source_path": "app/sprite_polish.py",
+      "sha256": "38d6f355aef693751ebac81ff065c200d4a476434efd3201e8610e570da27c1d"
+    },
+    {
+      "path": "app/sprites.py",
+      "source_path": "app/sprites.py",
+      "sha256": "b01a5ad4af47aeaf0bbe3d7ee017d97ff9a1159eedaa25c5a961f69c9a96c0bb"
+    },
+    {
+      "path": "app/standby.py",
+      "source_path": "app/standby.py",
+      "sha256": "5a1f1093fd71551bef7da317924e050feeebf71b1faa2651de6e701de89b15c4"
+    },
+    {
+      "path": "app/status_card.py",
+      "source_path": "app/status_card.py",
+      "sha256": "39742ed33d6943fd77a1d6b9de663035808bbae6bbb6b8bd4594e40a21c85207"
+    },
+    {
+      "path": "app/storage/__init__.py",
+      "source_path": "app/storage/__init__.py",
+      "sha256": "e19a7b46a409575dea628d40fdfc58e45a1c5327e90575f373f2eaef012b4591"
+    },
+    {
+      "path": "app/storage/settings.py",
+      "source_path": "app/storage/settings.py",
+      "sha256": "e1c37b69cc219a8470d99a9a235767b8979677b7127e9b40a4c121be76aceda2"
+    },
+    {
+      "path": "app/tools/__init__.py",
+      "source_path": "app/tools/__init__.py",
+      "sha256": "0512e2d3a3980d8df9453d75c43e8e14d246faea095f26074c49291c7274f22a"
+    },
+    {
+      "path": "app/tools/debug_panel.py",
+      "source_path": "app/tools/debug_panel.py",
+      "sha256": "01b9ead0ca936c01b0a7c6f32a260881fc8460ac9b73e3d2e4111b449e2b3a0f"
+    },
+    {
+      "path": "app/tray.py",
+      "source_path": "app/tray.py",
+      "sha256": "327bbd9f4f6954e5006456fd6ef7fa190d9cba76e42e1c74245d825ffbf5b0ec"
+    },
+    {
+      "path": "app/visual_calibration.py",
+      "source_path": "app/visual_calibration.py",
+      "sha256": "711112b5376277444c8056192d1f23b75b3b1e3a880a3eeefdaeac9989fc5bea"
+    },
+    {
+      "path": "build_exe.bat",
+      "source_path": "build_exe.bat",
+      "sha256": "c31e9ea708910c1d19dbeca7625940ce9ff62ad892b2c18999bb004b74516013"
+    },
+    {
+      "path": "debug_run.bat",
+      "source_path": "debug_run.bat",
+      "sha256": "b1f3ffafda2bc053fdf94d8f1197c299e697b26aca5356aaead14e2a457d21fb"
+    },
+    {
+      "path": "docs/screenshots/desktop_interaction.jpg",
+      "source_path": "docs/screenshots/desktop_interaction.jpg",
+      "sha256": "ccb8d78a5ffb93b844edab5a876f1531ea6c4e123d96a6bd4226e3b31f9577f3"
+    },
+    {
+      "path": "docs/screenshots/fortune_room.jpg",
+      "source_path": "docs/screenshots/fortune_room.jpg",
+      "sha256": "2eb887d3921604c9afbf757f09cb4779d0f489c645f12fb9dede846939b71268"
+    },
+    {
+      "path": "docs/screenshots/standby_stage.jpg",
+      "source_path": "docs/screenshots/standby_stage.jpg",
+      "sha256": "90451a38590b5bbd70c69167ea7a918a3fc44b36a273b890e0e898762901ba68"
+    },
+    {
+      "path": "installer/ChineseTraditional.isl",
+      "source_path": "installer/ChineseTraditional.isl",
+      "sha256": "bf5734f7a9c63a33c08a4cac9b6f280dc00a5b1ff3c8a722bb0ef8f751163773"
+    },
+    {
+      "path": "installer/PandaDesktopPet.iss",
+      "source_path": "installer/PandaDesktopPet.iss",
+      "sha256": "3337c8224c4a92a160820c4f712458d02c9b588c37ac1150bf3b4e76148b36da"
+    },
+    {
+      "path": "requirements-build.txt",
+      "source_path": "requirements-build.txt",
+      "sha256": "6159aa77928b31d9a51dab73e0eef8df12ad3fd2765119d52a6b443791b1b7b5"
+    },
+    {
+      "path": "requirements.txt",
+      "source_path": "requirements.txt",
+      "sha256": "36e9896fad04b0bd7f85a3a3f2360af45e5046b8fe501f5830c256bf7394585b"
+    },
+    {
+      "path": "scripts/convert_mouse_cursors.py",
+      "source_path": "scripts/convert_mouse_cursors.py",
+      "sha256": "870fb2cacaa547ccdc7a3bb0a9d59f65ec25e199d64228d623d5a1c2f144d043"
+    },
+    {
+      "path": "tests/check_frames.py",
+      "source_path": "tests/check_frames.py",
+      "sha256": "dfba9621e7fbf1a6a0a2f76f72a4299304a08b1f83d22e7a436e4c5f0e74c88c"
+    },
+    {
+      "path": "tests/data/art_scan_clean_20261122.json",
+      "source_path": "tests/data/art_scan_clean_20261122.json",
+      "sha256": "fd49e60822688e06a7abccb9bcf6fd31a5883d86c01a0ead4c9dbfc8e0aaa3d1"
+    },
+    {
+      "path": "asset_tests/test_9slice_audit.py",
+      "source_path": "tests/test_9slice_audit.py",
+      "sha256": "60e4d68fcb6ab1c739c4e01bbe473cb4e83cf6346bfca4660657d133c00efe5d"
+    },
+    {
+      "path": "asset_tests/test_action_placement.py",
+      "source_path": "tests/test_action_placement.py",
+      "sha256": "aeed65122ef30259f4b729c8f1c4174b0c4165e16a3cc5a4efbcdef7c3c28118"
+    },
+    {
+      "path": "asset_tests/test_action_window_alignment.py",
+      "source_path": "tests/test_action_window_alignment.py",
+      "sha256": "f8fbd763c43d50682faf80c9b9ef6f306aa426ede76dd9dea9a1c4abc98afb5e"
+    },
+    {
+      "path": "asset_tests/test_all_members_food_animation_matrix.py",
+      "source_path": "tests/test_all_members_food_animation_matrix.py",
+      "sha256": "3e2cd010e3cba97f6a2c8f843a717f71f38f50dcc366526af2c41a27435347b5"
+    },
+    {
+      "path": "tests/test_asset_registry.py",
+      "source_path": "tests/test_asset_registry.py",
+      "sha256": "ada482bd5d2dd6113880ca0c47f2a5616b48d19f2596990babe5d230bceb5af7"
+    },
+    {
+      "path": "workshop_tests/test_asset_review_policy_consistency.py",
+      "source_path": "tests/test_asset_review_policy_consistency.py",
+      "sha256": "c74afde7c5affe140c243a32a92d6abbfee30cbcab933c3f85bb728ab2276c8d"
+    },
+    {
+      "path": "asset_tests/test_birthday_dialog.py",
+      "source_path": "tests/test_birthday_dialog.py",
+      "sha256": "564ae1fe9655d26f2565ff4b408453c0d5d1e92cb69951928fe7f1b1bf347c23"
+    },
+    {
+      "path": "workshop_tests/test_bubble_asset_preparation.py",
+      "source_path": "tests/test_bubble_asset_preparation.py",
+      "sha256": "96bcf055e91620cc3df39eca64580d630664faa68726c34d0135c9f8f6ea32a7"
+    },
+    {
+      "path": "tests/test_bubble_chips_layout.py",
+      "source_path": "tests/test_bubble_chips_layout.py",
+      "sha256": "cd4abb6c5496b05d74aa3eec72f1d7b2222cec12a0ea72704d84f0e382cda5d9"
+    },
+    {
+      "path": "tests/test_bubble_layout.py",
+      "source_path": "tests/test_bubble_layout.py",
+      "sha256": "7047bcae9e69a8c42c3abe7eb9db11a990b557e49c0629cd5182f55937a5382d"
+    },
+    {
+      "path": "asset_tests/test_bubble_rendering.py",
+      "source_path": "tests/test_bubble_rendering.py",
+      "sha256": "9e2018382544fe05a34ab9839b6bf1290e1948e636a4ae0ab3212265e3561bce"
+    },
+    {
+      "path": "tests/test_bubble_themes.py",
+      "source_path": "tests/test_bubble_themes.py",
+      "sha256": "5db3729d901ac58a40438983ec360742ee267c254c2ddbe319bf96be967c1679"
+    },
+    {
+      "path": "tests/test_build_provenance.py",
+      "source_path": "tests/test_build_provenance.py",
+      "sha256": "62960e6a0b776b638a06150321186ef7aa09f7cf9a56cb6152b737d680197bd2"
+    },
+    {
+      "path": "asset_tests/test_c2_integration.py",
+      "source_path": "tests/test_c2_integration.py",
+      "sha256": "be74495f95c75d5c62fbb19c75b4ca59eddfd6d7fe13a8d2ed2c359c41fe026f"
+    },
+    {
+      "path": "asset_tests/test_c2b_integration.py",
+      "source_path": "tests/test_c2b_integration.py",
+      "sha256": "a87a5f9e008a74b1bbac2cd8dc03b918261538644e2b7dc24b9c1dfd14a77741"
+    },
+    {
+      "path": "asset_tests/test_c4_integration.py",
+      "source_path": "tests/test_c4_integration.py",
+      "sha256": "c768484203b0befeccc5677cc1a75a3a67da936546704b3cacbcb884c35ff754"
+    },
+    {
+      "path": "asset_tests/test_c5_integration.py",
+      "source_path": "tests/test_c5_integration.py",
+      "sha256": "cbc2d721444414965aab8b5410cdb6acdaa6a7ce12133b41b3134e006805606a"
+    },
+    {
+      "path": "tests/test_calendar.py",
+      "source_path": "tests/test_calendar.py",
+      "sha256": "f5bcad9437680ac7ade3f6c530219bbf5bfe89a6f49a156b9b1e5fb80725cae4"
+    },
+    {
+      "path": "tests/test_cameo.py",
+      "source_path": "tests/test_cameo.py",
+      "sha256": "6378debf17eb26c897ffc620e8ddc4edf982c8edf3d8fff8b3615ce4dcb1302b"
+    },
+    {
+      "path": "asset_tests/test_celebration_roster.py",
+      "source_path": "tests/test_celebration_roster.py",
+      "sha256": "0787fec3eb075666a6fded072e4c6dcac870b20a45f2d89b481d5ed732d1c606"
+    },
+    {
+      "path": "tests/test_coordinator.py",
+      "source_path": "tests/test_coordinator.py",
+      "sha256": "a014ab2b295b0329a5af14d5c5ae43f246d1cd1147ad0e3041ccc0ae9a227c40"
+    },
+    {
+      "path": "asset_tests/test_cursor_manager.py",
+      "source_path": "tests/test_cursor_manager.py",
+      "sha256": "e804b279c8e9dd8b5efaaaebc2b87f079b7efab6c3bc0058c44651cebbf7b868"
+    },
+    {
+      "path": "asset_tests/test_daily_actions.py",
+      "source_path": "tests/test_daily_actions.py",
+      "sha256": "59ffc59c6df5b968571eaaff73b6515f1277bbebd5d0fbad404861c8c8664015"
+    },
+    {
+      "path": "asset_tests/test_debug_platform_integration.py",
+      "source_path": "tests/test_debug_platform_integration.py",
+      "sha256": "4d3068545af87c1175d4cf87060f9cbd712d669607c8d089bfdf33a135b5632a"
+    },
+    {
+      "path": "asset_tests/test_disappearing_panda_fix.py",
+      "source_path": "tests/test_disappearing_panda_fix.py",
+      "sha256": "ac843473b51e7e4fa1c0b3c9b2bbaf3effa7a0e96ed5b0fb12e74015ded343f6"
+    },
+    {
+      "path": "asset_tests/test_disliked_feed_animation.py",
+      "source_path": "tests/test_disliked_feed_animation.py",
+      "sha256": "02e91d7d29ec95c926a08c212a0270bf2fb8782c40bdb17c93f78e2beb9e96b9"
+    },
+    {
+      "path": "asset_tests/test_dome_scenes.py",
+      "source_path": "tests/test_dome_scenes.py",
+      "sha256": "925f6ee72378b1508d53734ace9e2ba1f869abd5693231d082f6aeee0500190d"
+    },
+    {
+      "path": "asset_tests/test_enduser_build.py",
+      "source_path": "tests/test_enduser_build.py",
+      "sha256": "7506bb404051e4f6032878f11448e26f89fc74815fa302f533c1a5ac20fe5cb5"
+    },
+    {
+      "path": "asset_tests/test_eunji_boxing_mole.py",
+      "source_path": "tests/test_eunji_boxing_mole.py",
+      "sha256": "e325efdb5bc027e709b2ad73d101d4ec6971a89786417ed5369ff5ad41927ea0"
+    },
+    {
+      "path": "asset_tests/test_feed_food_log.py",
+      "source_path": "tests/test_feed_food_log.py",
+      "sha256": "5540a61919310494ededa3c53c971733a293bcf0de3ccacfbe4433debaaf244f"
+    },
+    {
+      "path": "asset_tests/test_feed_full.py",
+      "source_path": "tests/test_feed_full.py",
+      "sha256": "0b5b03a1189bdc0a8f722f31fb9bdeda8c5f320a1d3088576a51f1aed0b65f89"
+    },
+    {
+      "path": "tests/test_festival_greetings.py",
+      "source_path": "tests/test_festival_greetings.py",
+      "sha256": "5b1d4a446ae42b3f4db7d0056dba65018c7228eb354fd69fd77d26831417fd3e"
+    },
+    {
+      "path": "asset_tests/test_first_run_tip.py",
+      "source_path": "tests/test_first_run_tip.py",
+      "sha256": "ba05b1685f63a8f3993f442070eb51ad15141802cffe7f9422b89c8836c6df00"
+    },
+    {
+      "path": "asset_tests/test_food_expansion.py",
+      "source_path": "tests/test_food_expansion.py",
+      "sha256": "180e70685664f3c3fbef712751d019ca61c72f4150df936d4ac0909fbbe76e53"
+    },
+    {
+      "path": "tests/test_food_icon_staging.py",
+      "source_path": "tests/test_food_icon_staging.py",
+      "sha256": "ab65b1b80fe76a58fdf81bd9579eb27867b1ebfe32babc7c7d2c096ceabb4122"
+    },
+    {
+      "path": "tests/test_food_kind_reactions.py",
+      "source_path": "tests/test_food_kind_reactions.py",
+      "sha256": "5e4af0fe35cea841544df957340caa2f0d2fc9c6bf500f253d1bccf0af41010c"
+    },
+    {
+      "path": "tests/test_food_log.py",
+      "source_path": "tests/test_food_log.py",
+      "sha256": "bfffc9a096b4e8ed4087c3e4dcd4779ac09ad63f061b19f193606e431d8a35bd"
+    },
+    {
+      "path": "asset_tests/test_food_panel.py",
+      "source_path": "tests/test_food_panel.py",
+      "sha256": "89c93fe633e80c7bbff241694105968aa64976a84f22d2d5da30e57b15e55c38"
+    },
+    {
+      "path": "asset_tests/test_food_panel_dpi.py",
+      "source_path": "tests/test_food_panel_dpi.py",
+      "sha256": "f06686d78d452d78bb4ee787291c83fd2d9feffd485c132b2d2548e324335c1d"
+    },
+    {
+      "path": "asset_tests/test_food_prop_mapping.py",
+      "source_path": "tests/test_food_prop_mapping.py",
+      "sha256": "67d1d407d55dd30cde4935eb66466f9e457f08bddb6d45ca332c66a6e9bfb664"
+    },
+    {
+      "path": "tests/test_fortune_reading.py",
+      "source_path": "tests/test_fortune_reading.py",
+      "sha256": "f97a5a730a36def84a3a75dfb49d9d16e99d3accd37837c99a750e2e6f18489c"
+    },
+    {
+      "path": "asset_tests/test_fortune_room.py",
+      "source_path": "tests/test_fortune_room.py",
+      "sha256": "5a9cfaf4901c79f172619d5800c26f5908b1469df2ca16883be79dbfedfe41cb"
+    },
+    {
+      "path": "asset_tests/test_fortune_theater_cache_key.py",
+      "source_path": "tests/test_fortune_theater_cache_key.py",
+      "sha256": "ef415e550db036c50f4a0ce2b562c1506d9b9d94c3910f4bf9903471bd2a2cbb"
+    },
+    {
+      "path": "asset_tests/test_high_dpi_ui_scaling.py",
+      "source_path": "tests/test_high_dpi_ui_scaling.py",
+      "sha256": "ab09a14ebe192be90383e4bf0a0d5a86b888940d7151424781ef8e40f4cc0eda"
+    },
+    {
+      "path": "asset_tests/test_holiday_previews_and_standby_modes.py",
+      "source_path": "tests/test_holiday_previews_and_standby_modes.py",
+      "sha256": "b86d2916a85be2d4ffa42f591b6d7b26ee28abffaad2675004846087179dd432"
+    },
+    {
+      "path": "tests/test_i18n_foods_status.py",
+      "source_path": "tests/test_i18n_foods_status.py",
+      "sha256": "66c0e47db887b7327c63b52182b3a5331c406303a28b8a3895abf73d57c8d9f7"
+    },
+    {
+      "path": "asset_tests/test_i18n_language_switch.py",
+      "source_path": "tests/test_i18n_language_switch.py",
+      "sha256": "76b37f46507406bf4ee847fc40836a6e2a988a5fd190538c8710a0526e698d65"
+    },
+    {
+      "path": "asset_tests/test_layered_pet_integration.py",
+      "source_path": "tests/test_layered_pet_integration.py",
+      "sha256": "6211f368a406d7b28b14d7de200b93d39334ca9cda7c5af1aaf03647d61c37aa"
+    },
+    {
+      "path": "tests/test_layered_surface.py",
+      "source_path": "tests/test_layered_surface.py",
+      "sha256": "c9b975df0934405fe9e63c9f1c9ab764da5e12a576979f679b13ba5f445f7636"
+    },
+    {
+      "path": "asset_tests/test_long_notification_bubble.py",
+      "source_path": "tests/test_long_notification_bubble.py",
+      "sha256": "dd63ca105510190cc839cad22d85970b7819e6023349a424c13a751be82ee877"
+    },
+    {
+      "path": "asset_tests/test_notification_queue.py",
+      "source_path": "tests/test_notification_queue.py",
+      "sha256": "b77260a9676006d7ebb91e5e24bb3ea2aaf835a94fb30ba148917c0a18a53813"
+    },
+    {
+      "path": "tests/test_persistence_service.py",
+      "source_path": "tests/test_persistence_service.py",
+      "sha256": "669ad7855d95213fe79ace3cc09086649d05c6bc41f4d23bac6f91359508a40c"
+    },
+    {
+      "path": "asset_tests/test_pet_lifecycle.py",
+      "source_path": "tests/test_pet_lifecycle.py",
+      "sha256": "a06ac4637b2b268a7bce20692a80fb2ee4dc7d200c88552aad14fc9fa9417c36"
+    },
+    {
+      "path": "asset_tests/test_pink_context_menu.py",
+      "source_path": "tests/test_pink_context_menu.py",
+      "sha256": "1d7b3bd5b1f401e69f0a97470a6a8f728ace37864b4b68babf92ee682388a9c2"
+    },
+    {
+      "path": "asset_tests/test_policy_blacklist_guard.py",
+      "source_path": "tests/test_policy_blacklist_guard.py",
+      "sha256": "c90f3a1bd57573ad8e818cca6ac47fa22b4960fa5544cdc99dcf27fa5f62df5b"
+    },
+    {
+      "path": "tests/test_preserved_animation_canvas.py",
+      "source_path": "tests/test_preserved_animation_canvas.py",
+      "sha256": "3f9e922d11f89e0c94cbbe9d244af946377d46259283cff562cf18afd0d06d1a"
+    },
+    {
+      "path": "asset_tests/test_profile_card.py",
+      "source_path": "tests/test_profile_card.py",
+      "sha256": "05b2f9c87f115aa8001d182aac719c6d3407d5338709c97882868d2ef651ffbb"
+    },
+    {
+      "path": "asset_tests/test_profile_card_bubble.py",
+      "source_path": "tests/test_profile_card_bubble.py",
+      "sha256": "25dea3bf195a1d0eecbca62c1984fd1bcb531d6154192cbd8c2c8a311a6f3744"
+    },
+    {
+      "path": "asset_tests/test_profile_greeting.py",
+      "source_path": "tests/test_profile_greeting.py",
+      "sha256": "1671ef6c0b320bc37e97956742fc7762c656a508185a3157844028c0c24b2f36"
+    },
+    {
+      "path": "tests/test_public_export.py",
+      "source_path": "tests/test_public_export.py",
+      "sha256": "b26e46523fb06775c0174dc3015449b0197b256a8cf1e91d2863c4cca66cece3"
+    },
+    {
+      "path": "asset_tests/test_quotes_and_i18n_v13.py",
+      "source_path": "tests/test_quotes_and_i18n_v13.py",
+      "sha256": "7239e74552e4710cc23c1322c8259d9bbd3527993d20da811a468a43306627a8"
+    },
+    {
+      "path": "workshop_tests/test_quotes_export_workshop.py",
+      "source_path": "tests/test_quotes_export_workshop.py",
+      "sha256": "9589283028ef09204130179d1d48a7d0bba58b607081de3335ccfcf72e59090d"
+    },
+    {
+      "path": "asset_tests/test_resource_store.py",
+      "source_path": "tests/test_resource_store.py",
+      "sha256": "668630be0b5692f76e769ba223e5f9c50295f36542c7217cbfc32652935f1798"
+    },
+    {
+      "path": "tests/test_satiety_and_aegyo.py",
+      "source_path": "tests/test_satiety_and_aegyo.py",
+      "sha256": "a35e66c97510b5f4f8cd4577f266d98f23a5e6e8c3600e27a63947de81079bbc"
+    },
+    {
+      "path": "asset_tests/test_satiety_persistence.py",
+      "source_path": "tests/test_satiety_persistence.py",
+      "sha256": "728e458f8291c503d49f3f8d3f070718031f5cd407f385c803ca1a1585d68960"
+    },
+    {
+      "path": "asset_tests/test_settings_apply.py",
+      "source_path": "tests/test_settings_apply.py",
+      "sha256": "df6f2cf4ac3cc921a83d2f51cb7fdd6b19f8221b647b60086e7d4f0b637ecb1b"
+    },
+    {
+      "path": "tests/test_settings_panel.py",
+      "source_path": "tests/test_settings_panel.py",
+      "sha256": "b812629af953ecba5880642427eef9c63f084cd25ca8f67a83cdbfa19dca7d86"
+    },
+    {
+      "path": "asset_tests/test_settings_wiring.py",
+      "source_path": "tests/test_settings_wiring.py",
+      "sha256": "0c86f4c9e396f326d32ed5480ecccf872fdf59aa2cb71be3886d17667e9a5c83"
+    },
+    {
+      "path": "tests/test_size_scaling.py",
+      "source_path": "tests/test_size_scaling.py",
+      "sha256": "f63a1dba0b6d180ce6598a9db1d8bbed5adae9646a6cfad38f3e18d64dd521f5"
+    },
+    {
+      "path": "asset_tests/test_special_actions.py",
+      "source_path": "tests/test_special_actions.py",
+      "sha256": "fb2bad60f4a6847801b6638bcc18b61d4ef69b2406f0e82a53c7c37f4fa4ee65"
+    },
+    {
+      "path": "tests/test_speech_queue.py",
+      "source_path": "tests/test_speech_queue.py",
+      "sha256": "16b51338c52ae0053a24194ae76de773f966eae3db91a48492ff08931ec649f1"
+    },
+    {
+      "path": "asset_tests/test_sprite_equalize.py",
+      "source_path": "tests/test_sprite_equalize.py",
+      "sha256": "60a21c6febed2790d154f6dd44fcf10273eea85e273ef6ab5785bb892f9769c9"
+    },
+    {
+      "path": "tests/test_sprite_polish.py",
+      "source_path": "tests/test_sprite_polish.py",
+      "sha256": "23debc00c1eadfe4de6a562d6941814f991932d01100ed0d9d6b296de65242f2"
+    },
+    {
+      "path": "asset_tests/test_stage_calibration.py",
+      "source_path": "tests/test_stage_calibration.py",
+      "sha256": "0cfc6b0968aa8f5c375d9e5298b2f1fe1760a28f1160a4d8a3ac3302698c7b0d"
+    },
+    {
+      "path": "asset_tests/test_standby_drawn_scene_actions.py",
+      "source_path": "tests/test_standby_drawn_scene_actions.py",
+      "sha256": "7fb2608a8ae93d03580b55f326171a88e41790bfdd8d7dd540a48eb67c164724"
+    },
+    {
+      "path": "asset_tests/test_standby_memory_release.py",
+      "source_path": "tests/test_standby_memory_release.py",
+      "sha256": "728c788d42ae6975ed2bb75fbdfac6f53d3e8821a92e597a5731a598565c8777"
+    },
+    {
+      "path": "asset_tests/test_standby_pet_restore.py",
+      "source_path": "tests/test_standby_pet_restore.py",
+      "sha256": "37eb9e4d8625c58ac5522092ba73cd562280f8b800d25f5930200e366662d1a3"
+    },
+    {
+      "path": "asset_tests/test_standby_scenes.py",
+      "source_path": "tests/test_standby_scenes.py",
+      "sha256": "b91489e2c904b862eb5bc5fdafb061a8e959e3b97746636404d11823bff8f505"
+    },
+    {
+      "path": "asset_tests/test_standby_soft_edges.py",
+      "source_path": "tests/test_standby_soft_edges.py",
+      "sha256": "3e4b0f0a2c968dd5d580cee462c00b83ed56f8396b18c031cf2604ecb17735c9"
+    },
+    {
+      "path": "asset_tests/test_standby_wallpapers.py",
+      "source_path": "tests/test_standby_wallpapers.py",
+      "sha256": "bd04c5f655bb8e8d9b043d2bca4f52750654bcb37022f78da712f4116c06fa16"
+    },
+    {
+      "path": "asset_tests/test_status_card_and_quotes.py",
+      "source_path": "tests/test_status_card_and_quotes.py",
+      "sha256": "a0d8c6cf4819964544c088bca564864979204eb007c3325e81250425a4a6c4a4"
+    },
+    {
+      "path": "tests/test_tray_and_occlusion_defense.py",
+      "source_path": "tests/test_tray_and_occlusion_defense.py",
+      "sha256": "c3d4b593eb28f32a099258224add50a69d238b973a183bc4f8b0a7a9162d55e2"
+    },
+    {
+      "path": "asset_tests/test_user_batch_1108.py",
+      "source_path": "tests/test_user_batch_1108.py",
+      "sha256": "52e96d6f825fcab6035805fd9541d30f235f40173a107bf5aaae91ccf3bd94f3"
+    },
+    {
+      "path": "tests/test_user_data_dir.py",
+      "source_path": "tests/test_user_data_dir.py",
+      "sha256": "3f075cd8b28c36ce8359d7748ce106c3024f22d5fd1b50ad67ee49ed9acaa074"
+    },
+    {
+      "path": "asset_tests/test_verified_quotes.py",
+      "source_path": "tests/test_verified_quotes.py",
+      "sha256": "2fbd375c680adc07c40d66ee5649bb59453022868a36c4eb6aa8ee71066fd33b"
+    },
+    {
+      "path": "workshop_tests/test_wave2_integration.py",
+      "source_path": "tests/test_wave2_integration.py",
+      "sha256": "db4b3a1d15f58b26e59fb56616437a340bffc03c671e1d749294820370316630"
+    },
+    {
+      "path": "asset_tests/test_wave6_regressions.py",
+      "source_path": "tests/test_wave6_regressions.py",
+      "sha256": "87818a3d3741237b22e7952e38485c6a48024fa5a5e3cb839998516a3bbb02e9"
+    },
+    {
+      "path": "tests/test_win32_adapter.py",
+      "source_path": "tests/test_win32_adapter.py",
+      "sha256": "27b915f5bb36846bdfd43dae338102dbe34d40d987fa7476868f060985ac81f8"
+    },
+    {
+      "path": "tests/visual_helpers.py",
+      "source_path": "tests/visual_helpers.py",
+      "sha256": "43015fb0b54b7bf582226f7d93669cbdbddec4875dbd4da3740ca926df99a5d3"
+    },
+    {
+      "path": "tools/asset_catalog.py",
+      "source_path": "tools/asset_catalog.py",
+      "sha256": "2833a15cd8788cfa59c98900d978e92d24d50da7f7dc727b8d963309d1cb4450"
+    },
+    {
+      "path": "tools/build_provenance.py",
+      "source_path": "tools/build_provenance.py",
+      "sha256": "4092e26971659dcd19447a422112588410fdae181e5801cdd9871281cb551506"
+    },
+    {
+      "path": "tools/clean_edge_fringe.py",
+      "source_path": "tools/clean_edge_fringe.py",
+      "sha256": "be5be634f3bbfe80ee3b392a23a9e85a5cf1d7bad33c0ec55180f1d90d3f2df6"
+    },
+    {
+      "path": "tools/export_public_repo.py",
+      "source_path": "tools/export_public_repo.py",
+      "sha256": "2eea870d9287f18f5154514bb2ba2d13fb0ad5e7f6c5a132f765a20ca80885a5"
+    },
+    {
+      "path": "tools/extract_rongdoong.py",
+      "source_path": "tools/extract_rongdoong.py",
+      "sha256": "4fe014360898b9f76fcc29febad5dcbeee605e29e50867c09635ee62e6c7d8f5"
+    },
+    {
+      "path": "tools/pack_assets.py",
+      "source_path": "tools/pack_assets.py",
+      "sha256": "50ec45be5314367866dc2cdf998501f72f6a6c6a9ff63be2d32dde65ba91bf0c"
+    },
+    {
+      "path": "tools/prepare_bubble_art.py",
+      "source_path": "tools/prepare_bubble_art.py",
+      "sha256": "3fdb2cb3b98de1b342b3b5928ddaa5064e911ae3c0cb84693be56915b3e6bada"
+    },
+    {
+      "path": "tools/runtime_manifest.py",
+      "source_path": "tools/runtime_manifest.py",
+      "sha256": "f80f99a92ce5c932e8fea7796042d554f546a197c89a1692ae719d5f6b0971d3"
+    },
+    {
+      "path": "tools/stage_food_icons.py",
+      "source_path": "tools/stage_food_icons.py",
+      "sha256": "761ac5f62787e4d1f2512fdc972efed58acdf4f8acd35d7643f6bc0ffe8e1207"
+    },
+    {
+      "path": "tools/stage_googleflow_assets.py",
+      "source_path": "tools/stage_googleflow_assets.py",
+      "sha256": "2821e6e7b1ac26b2be06516c9f4e35257730fe7d32dd81d3a1fbfa0dea2de351"
+    },
+    {
+      "path": "啟動熊貓桌寵.vbs",
+      "source_path": "啟動熊貓桌寵.vbs",
+      "sha256": "52eb5f2a73fd1b972387542b3246d19f3724394f304403cbdc20989f609ae1ed"
+    }
+  ],
+  "workshop_tests": [
+    {
+      "source_path": "tests/test_wave2_integration.py",
+      "exported_path": "workshop_tests/test_wave2_integration.py",
+      "required_private_inputs": "work/asset_review_policy.json, full workshop inventory and approved character art"
+    },
+    {
+      "source_path": "tests/test_asset_review_policy_consistency.py",
+      "exported_path": "workshop_tests/test_asset_review_policy_consistency.py",
+      "required_private_inputs": "work/asset_review_policy.json and full workshop character inventory, including blocked/excluded images"
+    },
+    {
+      "source_path": "tests/test_bubble_asset_preparation.py",
+      "exported_path": "workshop_tests/test_bubble_asset_preparation.py",
+      "required_private_inputs": "reference/ original background6/background8 sheets, work/bubbles/source/ original backups, and work/evidence/x6/asset_inventory.json"
+    },
+    {
+      "source_path": "tests/test_quotes_export_workshop.py",
+      "exported_path": "workshop_tests/test_quotes_export_workshop.py",
+      "required_private_inputs": "work/quotes_verified_58_export.md (workshop quotes markdown export ledger)"
+    }
+  ],
+  "asset_tests": [
+    {
+      "source_path": "tests/test_9slice_audit.py",
+      "exported_path": "asset_tests/test_9slice_audit.py",
+      "required_assets": "work/bubbles/ frame PNGs"
+    },
+    {
+      "source_path": "tests/test_action_placement.py",
+      "exported_path": "asset_tests/test_action_placement.py",
+      "required_assets": "work/characters/ approved sprite registry frames"
+    },
+    {
+      "source_path": "tests/test_action_window_alignment.py",
+      "exported_path": "asset_tests/test_action_window_alignment.py",
+      "required_assets": "PandaPet runtime + work/characters/ frames"
+    },
+    {
+      "source_path": "tests/test_all_members_food_animation_matrix.py",
+      "exported_path": "asset_tests/test_all_members_food_animation_matrix.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/foods/"
+    },
+    {
+      "source_path": "tests/test_birthday_dialog.py",
+      "exported_path": "asset_tests/test_birthday_dialog.py",
+      "required_assets": "work/characters/bomi/situational_all1/bomi_walk_wink.png edge fringe check"
+    },
+    {
+      "source_path": "tests/test_bubble_rendering.py",
+      "exported_path": "asset_tests/test_bubble_rendering.py",
+      "required_assets": "work/characters/bomi/idle_01.png & PandaPet bubble rendering"
+    },
+    {
+      "source_path": "tests/test_c2_integration.py",
+      "exported_path": "asset_tests/test_c2_integration.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/quotes.json"
+    },
+    {
+      "source_path": "tests/test_c2b_integration.py",
+      "exported_path": "asset_tests/test_c2b_integration.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/quotes.json"
+    },
+    {
+      "source_path": "tests/test_c4_integration.py",
+      "exported_path": "asset_tests/test_c4_integration.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/quotes.json"
+    },
+    {
+      "source_path": "tests/test_c5_integration.py",
+      "exported_path": "asset_tests/test_c5_integration.py",
+      "required_assets": "PandaPet runtime + work/standby_backgrounds & work/characters/"
+    },
+    {
+      "source_path": "tests/test_celebration_roster.py",
+      "exported_path": "asset_tests/test_celebration_roster.py",
+      "required_assets": "RES_ROOT + SpriteLibrary approved celebration frames"
+    },
+    {
+      "source_path": "tests/test_cursor_manager.py",
+      "exported_path": "asset_tests/test_cursor_manager.py",
+      "required_assets": "work/ui_icons/*.cur/.png & PandaPet cursor integration"
+    },
+    {
+      "source_path": "tests/test_daily_actions.py",
+      "exported_path": "asset_tests/test_daily_actions.py",
+      "required_assets": "PandaPet runtime + work/asset_registry.json & sprites"
+    },
+    {
+      "source_path": "tests/test_debug_platform_integration.py",
+      "exported_path": "asset_tests/test_debug_platform_integration.py",
+      "required_assets": "PandaPet runtime + work/characters/ frames"
+    },
+    {
+      "source_path": "tests/test_disappearing_panda_fix.py",
+      "exported_path": "asset_tests/test_disappearing_panda_fix.py",
+      "required_assets": "PandaPet runtime + work/characters/ frames"
+    },
+    {
+      "source_path": "tests/test_disliked_feed_animation.py",
+      "exported_path": "asset_tests/test_disliked_feed_animation.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/foods/"
+    },
+    {
+      "source_path": "tests/test_dome_scenes.py",
+      "exported_path": "asset_tests/test_dome_scenes.py",
+      "required_assets": "PandaPet/Standby runtime + work/characters/ & work/standby_backgrounds/ dome assets"
+    },
+    {
+      "source_path": "tests/test_enduser_build.py",
+      "exported_path": "asset_tests/test_enduser_build.py",
+      "required_assets": "imports test_pink_context_menu (work/ui_icons & PandaPet menu runtime)"
+    },
+    {
+      "source_path": "tests/test_eunji_boxing_mole.py",
+      "exported_path": "asset_tests/test_eunji_boxing_mole.py",
+      "required_assets": "work/asset_registry.json & approved eunji boxing sprites"
+    },
+    {
+      "source_path": "tests/test_feed_food_log.py",
+      "exported_path": "asset_tests/test_feed_food_log.py",
+      "required_assets": "PandaPet runtime + work/foods/ & work/characters/"
+    },
+    {
+      "source_path": "tests/test_feed_full.py",
+      "exported_path": "asset_tests/test_feed_full.py",
+      "required_assets": "PandaPet runtime + work/foods/ & work/characters/"
+    },
+    {
+      "source_path": "tests/test_first_run_tip.py",
+      "exported_path": "asset_tests/test_first_run_tip.py",
+      "required_assets": "PandaPet runtime + work/foods/ & work/characters/"
+    },
+    {
+      "source_path": "tests/test_food_expansion.py",
+      "exported_path": "asset_tests/test_food_expansion.py",
+      "required_assets": "work/foods/ PNG files"
+    },
+    {
+      "source_path": "tests/test_food_panel.py",
+      "exported_path": "asset_tests/test_food_panel.py",
+      "required_assets": "work/foods/ icon PNGs for FoodCafePanel"
+    },
+    {
+      "source_path": "tests/test_food_panel_dpi.py",
+      "exported_path": "asset_tests/test_food_panel_dpi.py",
+      "required_assets": "PandaPet runtime + work/foods/ icons"
+    },
+    {
+      "source_path": "tests/test_food_prop_mapping.py",
+      "exported_path": "asset_tests/test_food_prop_mapping.py",
+      "required_assets": "PandaPet runtime + work/foods/ icons"
+    },
+    {
+      "source_path": "tests/test_fortune_room.py",
+      "exported_path": "asset_tests/test_fortune_room.py",
+      "required_assets": "PandaPet/Standby runtime + work/characters/, work/scenes/fortune_room/, & wallpaper"
+    },
+    {
+      "source_path": "tests/test_fortune_theater_cache_key.py",
+      "exported_path": "asset_tests/test_fortune_theater_cache_key.py",
+      "required_assets": "work/scenes/fortune_room/ theater frames"
+    },
+    {
+      "source_path": "tests/test_high_dpi_ui_scaling.py",
+      "exported_path": "asset_tests/test_high_dpi_ui_scaling.py",
+      "required_assets": "work/characters/ sprites for MemberProfileCard DPI scaling checks"
+    },
+    {
+      "source_path": "tests/test_holiday_previews_and_standby_modes.py",
+      "exported_path": "asset_tests/test_holiday_previews_and_standby_modes.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/standby_backgrounds/"
+    },
+    {
+      "source_path": "tests/test_i18n_language_switch.py",
+      "exported_path": "asset_tests/test_i18n_language_switch.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/quotes.json"
+    },
+    {
+      "source_path": "tests/test_layered_pet_integration.py",
+      "exported_path": "asset_tests/test_layered_pet_integration.py",
+      "required_assets": "PandaPet ULW runtime + work/characters/ sprites"
+    },
+    {
+      "source_path": "tests/test_long_notification_bubble.py",
+      "exported_path": "asset_tests/test_long_notification_bubble.py",
+      "required_assets": "work/bubbles/ frame PNGs"
+    },
+    {
+      "source_path": "tests/test_notification_queue.py",
+      "exported_path": "asset_tests/test_notification_queue.py",
+      "required_assets": "PandaPet runtime + work/characters/ frames"
+    },
+    {
+      "source_path": "tests/test_pet_lifecycle.py",
+      "exported_path": "asset_tests/test_pet_lifecycle.py",
+      "required_assets": "PandaPet runtime + work/characters/ frames"
+    },
+    {
+      "source_path": "tests/test_pink_context_menu.py",
+      "exported_path": "asset_tests/test_pink_context_menu.py",
+      "required_assets": "work/ui_icons/ & work/standby_backgrounds.json for PinkContextMenu"
+    },
+    {
+      "source_path": "tests/test_policy_blacklist_guard.py",
+      "exported_path": "asset_tests/test_policy_blacklist_guard.py",
+      "required_assets": "work/asset_review_policy.json & approved character PNGs"
+    },
+    {
+      "source_path": "tests/test_profile_card.py",
+      "exported_path": "asset_tests/test_profile_card.py",
+      "required_assets": "work/characters/ sprites for MemberProfileCard"
+    },
+    {
+      "source_path": "tests/test_profile_card_bubble.py",
+      "exported_path": "asset_tests/test_profile_card_bubble.py",
+      "required_assets": "PandaPet runtime + work/characters/ sprites"
+    },
+    {
+      "source_path": "tests/test_profile_greeting.py",
+      "exported_path": "asset_tests/test_profile_greeting.py",
+      "required_assets": "PandaPet runtime + work/characters/ sprites"
+    },
+    {
+      "source_path": "tests/test_quotes_and_i18n_v13.py",
+      "exported_path": "asset_tests/test_quotes_and_i18n_v13.py",
+      "required_assets": "work/quotes.json companion lines ledger"
+    },
+    {
+      "source_path": "tests/test_resource_store.py",
+      "exported_path": "asset_tests/test_resource_store.py",
+      "required_assets": "work/ runtime assets for PakResourceStore & UI integration tests"
+    },
+    {
+      "source_path": "tests/test_satiety_persistence.py",
+      "exported_path": "asset_tests/test_satiety_persistence.py",
+      "required_assets": "PandaPet runtime + work/foods/ & work/characters/"
+    },
+    {
+      "source_path": "tests/test_settings_apply.py",
+      "exported_path": "asset_tests/test_settings_apply.py",
+      "required_assets": "PandaPet runtime + work/characters/ sprites"
+    },
+    {
+      "source_path": "tests/test_settings_wiring.py",
+      "exported_path": "asset_tests/test_settings_wiring.py",
+      "required_assets": "PandaPet runtime + work/characters/ sprites"
+    },
+    {
+      "source_path": "tests/test_special_actions.py",
+      "exported_path": "asset_tests/test_special_actions.py",
+      "required_assets": "PandaPet runtime + work/characters/ special animations"
+    },
+    {
+      "source_path": "tests/test_sprite_equalize.py",
+      "exported_path": "asset_tests/test_sprite_equalize.py",
+      "required_assets": "work/characters/ approved sprite frames"
+    },
+    {
+      "source_path": "tests/test_stage_calibration.py",
+      "exported_path": "asset_tests/test_stage_calibration.py",
+      "required_assets": "work/asset_registry.json & approved stage/action sprites"
+    },
+    {
+      "source_path": "tests/test_standby_drawn_scene_actions.py",
+      "exported_path": "asset_tests/test_standby_drawn_scene_actions.py",
+      "required_assets": "work/asset_registry.json & standby action sprites"
+    },
+    {
+      "source_path": "tests/test_standby_memory_release.py",
+      "exported_path": "asset_tests/test_standby_memory_release.py",
+      "required_assets": "PandaPet/Standby runtime + work/characters/ & work/standby_backgrounds/"
+    },
+    {
+      "source_path": "tests/test_standby_pet_restore.py",
+      "exported_path": "asset_tests/test_standby_pet_restore.py",
+      "required_assets": "imports test_action_window_alignment (PandaPet runtime + sprites)"
+    },
+    {
+      "source_path": "tests/test_standby_scenes.py",
+      "exported_path": "asset_tests/test_standby_scenes.py",
+      "required_assets": "work/characters/ & work/standby_backgrounds/"
+    },
+    {
+      "source_path": "tests/test_standby_soft_edges.py",
+      "exported_path": "asset_tests/test_standby_soft_edges.py",
+      "required_assets": "SpriteLibrary + work/standby_backgrounds/ & work/characters/"
+    },
+    {
+      "source_path": "tests/test_standby_wallpapers.py",
+      "exported_path": "asset_tests/test_standby_wallpapers.py",
+      "required_assets": "work/standby_backgrounds.json & JPG wallpapers"
+    },
+    {
+      "source_path": "tests/test_status_card_and_quotes.py",
+      "exported_path": "asset_tests/test_status_card_and_quotes.py",
+      "required_assets": "work/quotes.json & work/characters/ frames"
+    },
+    {
+      "source_path": "tests/test_user_batch_1108.py",
+      "exported_path": "asset_tests/test_user_batch_1108.py",
+      "required_assets": "PandaPet runtime + work/characters/ & work/foods/"
+    },
+    {
+      "source_path": "tests/test_verified_quotes.py",
+      "exported_path": "asset_tests/test_verified_quotes.py",
+      "required_assets": "work/quotes.json companion lines ledger"
+    },
+    {
+      "source_path": "tests/test_wave6_regressions.py",
+      "exported_path": "asset_tests/test_wave6_regressions.py",
+      "required_assets": "PandaPet runtime, approved sprites, and the previously built assets.pak"
+    }
+  ],
+  "default_test_command": "python -m unittest discover -s tests",
+  "input_bytes_verified": true
+}

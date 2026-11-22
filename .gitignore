@@ -1,0 +1,60 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.bak
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# User data (nickname, birthday, stats) — never commit
+work/settings.json
+work/runtime.json
+*.corrupt
+
+# Local shortcuts and one-off scripts
+*.lnk
+scratch/
+
+# PyInstaller work folder (dist/ and build/ are ignored above)
+*.spec.bak
+
+# Generated diagnostics and private authoring history (never ignore work/ itself).
+*.log
+*.tmp
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+/work/archive/
+/work/staging/
+# Deliberately retain workshop evidence and originals required by tests:
+# work/evidence/x6/asset_inventory.json, work/bubbles/source/, reference/需求/背景8.png,
+# work/quotes_verified_58_export.md and work/rongdoong_processed_v2/.

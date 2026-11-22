@@ -1,0 +1,19 @@
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.cur binary
+*.ico binary
+*.exe binary
+*.bat text eol=crlf
+*.vbs text eol=crlf
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.gif binary
+*.webp binary
+*.bmp binary
+*.zip binary
