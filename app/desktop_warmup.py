@@ -31,6 +31,8 @@ def celebration_actions(library: SpriteLibrary, member: str) -> tuple[str, ...]:
 
 
 class DesktopWarmupManager(StandbyWarmupManager):
+    THREAD_NAME = "DesktopWarmup"
+
     def _execute_plan(self, plan: dict) -> None:
         class Cancelled(BaseException):
             pass
@@ -44,6 +46,7 @@ class DesktopWarmupManager(StandbyWarmupManager):
             display_px=plan["sprite_px"],
             binary_alpha=bool(plan.get("binary_alpha", True)),
             edge_refine=bool(plan.get("edge_refine", False)),
+            registry=plan.get("registry"),
         )
         active = plan.get("active_member") or MEMBER_KEYS[0]
         members = sorted(MEMBER_KEYS, key=lambda m: m != active)

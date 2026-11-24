@@ -7,6 +7,8 @@ session kept ~250 MB (230 -> 518 -> 778 -> 935 MB over three rounds).
 from __future__ import annotations
 
 import datetime as dt
+import gc
+import threading
 import tkinter as tk
 import unittest
 from pathlib import Path
@@ -22,7 +24,24 @@ from app.action_cache import LazyPhotoList
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class StandbyMemoryReleaseTest(unittest.TestCase):
+class _TkThreadGcTest(unittest.TestCase):
+    """Collect each test's dead Tk objects here, on the Tk thread.
+
+    The test frame is gone by tearDown, so a closed pet / root left in cycles is
+    reclaimable now; left for later, a warm-up worker's GC pass may finalize it off
+    the Tk thread (Tcl_AsyncDelete, 0x80000003).
+    """
+
+    def tearDown(self) -> None:
+        gc.collect()
+        super().tearDown()
+
+
+def _warmup_threads() -> list[threading.Thread]:
+    return [t for t in threading.enumerate() if t.name in ("StandbyWarmup", "DesktopWarmup") and t.is_alive()]
+
+
+class StandbyMemoryReleaseTest(_TkThreadGcTest):
     def test_trim_keeps_the_most_recent_entries(self) -> None:
         cache = {k: k for k in "abcd"}
         _trim_photo_cache(cache)
@@ -112,7 +131,7 @@ class StandbyMemoryReleaseTest(unittest.TestCase):
         self.assertEqual(fake._schedule_memory_reclaim.call_count, 2)
 
 
-class PanelImageReleaseTest(unittest.TestCase):
+class PanelImageReleaseTest(_TkThreadGcTest):
     """Combo report (switch member + actions + bubbles + food panel): +56 Tk images per
     food-panel open and bubble art stayed alive until a full gc pass (572 vs 9 images)."""
 
@@ -151,11 +170,45 @@ class PanelImageReleaseTest(unittest.TestCase):
             pet.close()
 
 
+class WarmupWorkerShutdownTest(_TkThreadGcTest):
+    """Codex 2026-11-24: shutdown() joined for 1.5 s only, so a worker could outlive
+    pet.close() and crash the next Tk lifetime from its GC pass."""
+
+    def test_close_leaves_no_warmup_worker_alive(self) -> None:
+        import os
+        import tempfile
+        import time
+        from unittest.mock import MagicMock
+        os.environ.setdefault("PANDA_DATA_DIR", tempfile.mkdtemp(prefix="panda_test_"))
+        from app.main import PandaPet
+        with patch("app.main.PandaSystemTray", return_value=MagicMock()),              patch("app.main.GlobalHotkeyManager", return_value=MagicMock()),              patch("app.main.WindowsNotificationMonitor", return_value=MagicMock()),              patch("app.main.is_workstation_locked", return_value=False),              patch("app.main.get_system_idle_seconds", return_value=0.0):
+            pet = PandaPet(data_dir=Path(tempfile.mkdtemp(prefix="panda_test_")))
+        standby, desktop = pet._standby_warmup, pet._desktop_warmup
+        try:
+            pet._start_desktop_warmup()
+            pet._start_standby_warmup()
+            self.assertTrue(standby.is_worker_alive() or desktop.is_worker_alive())
+            # The workers reuse the pet's parsed registry instead of decoding the JSON again.
+            for manager in (standby, desktop):
+                plan = manager._plan
+                if plan is not None:
+                    self.assertIs(plan["registry"], pet.sprites.registry)
+            time.sleep(0.3)   # mid-plan: wallpaper fit / sprite decode in flight
+        finally:
+            started = time.perf_counter()
+            pet.close()
+            elapsed = time.perf_counter() - started
+        self.assertFalse(standby.is_worker_alive())
+        self.assertFalse(desktop.is_worker_alive())
+        self.assertEqual(_warmup_threads(), [])
+        self.assertLess(elapsed, standby.SHUTDOWN_TIMEOUT_S)
+
+
 if __name__ == "__main__":
     unittest.main()
 
 
-class CacheBudgetTest(unittest.TestCase):
+class CacheBudgetTest(_TkThreadGcTest):
     """2026-11-22 (Neno's breakdown of the live 567 MB process): count-only caches held
     full-size pixels for the whole session; they are byte-bounded now."""
 
@@ -203,7 +256,7 @@ class CacheBudgetTest(unittest.TestCase):
         self.assertNotIn("cache[cache_key] = (frame_im, raw_frame)", src)
 
 
-class AuxiliaryUiReleaseTest(unittest.TestCase):
+class AuxiliaryUiReleaseTest(_TkThreadGcTest):
     """2026-11-22: closing auxiliary panels/menus releases Tk PhotoImages and pet references;
     ULW cameo never materializes Tk PhotoImages from LazyPhotoList."""
 
@@ -315,7 +368,7 @@ class AuxiliaryUiReleaseTest(unittest.TestCase):
             pet.close()
 
 
-class DrawnSceneCoverTest(unittest.TestCase):
+class DrawnSceneCoverTest(_TkThreadGcTest):
     """2026-11-22: all 4 hand-drawn standby scenes render full static backdrops on secondary
     monitor covers without clock/date text, extra PhotoImages, or leaking items across switches."""
 

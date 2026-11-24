@@ -111,7 +111,7 @@
     {
       "path": "app/desktop_warmup.py",
       "source_path": "app/desktop_warmup.py",
-      "sha256": "559aaccbc071db9826dc94b56abb4dbd0aff0a100d1ec8390fcdc99659cfa4dd"
+      "sha256": "07235695727e05a2983d25b03be4b522dc5cb9db9e8df0db06a668d920fd2bff"
     },
     {
       "path": "app/dome_stage.py",
@@ -211,7 +211,7 @@
     {
       "path": "app/main.py",
       "source_path": "app/main.py",
-      "sha256": "914482feb71de308d0ce77a87710c95c37e84cf632f862b6d6de2d00f32917a2"
+      "sha256": "6bce1e458d73f96319381912d57ed28d471d99592c7dcc0b2ccb5b1db8aa1cdb"
     },
     {
       "path": "app/new_year_countdown.py",
@@ -281,12 +281,12 @@
     {
       "path": "app/sprites.py",
       "source_path": "app/sprites.py",
-      "sha256": "b01a5ad4af47aeaf0bbe3d7ee017d97ff9a1159eedaa25c5a961f69c9a96c0bb"
+      "sha256": "c5920e4e8c9d00394380ffe6d71e70a92c07ae08ef84445bc8a73bc6ddb93a4d"
     },
     {
       "path": "app/standby.py",
       "source_path": "app/standby.py",
-      "sha256": "5a1f1093fd71551bef7da317924e050feeebf71b1faa2651de6e701de89b15c4"
+      "sha256": "f569270d8d1493c6f27b737a55d9f0062d2b0be9103e79be3212dff7938a64e9"
     },
     {
       "path": "app/status_card.py",
@@ -356,7 +356,7 @@
     {
       "path": "installer/PandaDesktopPet.iss",
       "source_path": "installer/PandaDesktopPet.iss",
-      "sha256": "3337c8224c4a92a160820c4f712458d02c9b588c37ac1150bf3b4e76148b36da"
+      "sha256": "619b014851d9957e3abb95d580f86c356d40f134caacc6700da1be52d9ed0e9d"
     },
     {
       "path": "requirements-build.txt",
@@ -412,6 +412,11 @@
       "path": "workshop_tests/test_asset_review_policy_consistency.py",
       "source_path": "tests/test_asset_review_policy_consistency.py",
       "sha256": "c74afde7c5affe140c243a32a92d6abbfee30cbcab933c3f85bb728ab2276c8d"
+    },
+    {
+      "path": "tests/test_auto_schedule_rollover.py",
+      "source_path": "tests/test_auto_schedule_rollover.py",
+      "sha256": "f15078861197aeeec699e7fb1c969a8e16b373315235970e40e3ddf10ac2ecf2"
     },
     {
       "path": "asset_tests/test_birthday_dialog.py",
@@ -646,7 +651,7 @@
     {
       "path": "asset_tests/test_pet_lifecycle.py",
       "source_path": "tests/test_pet_lifecycle.py",
-      "sha256": "a06ac4637b2b268a7bce20692a80fb2ee4dc7d200c88552aad14fc9fa9417c36"
+      "sha256": "2c005d5b19c4406e5ca80ef5736f27f6197a0b710cfb29099a753fb39d1f208b"
     },
     {
       "path": "asset_tests/test_pink_context_menu.py",
@@ -761,7 +766,7 @@
     {
       "path": "asset_tests/test_standby_memory_release.py",
       "source_path": "tests/test_standby_memory_release.py",
-      "sha256": "728c788d42ae6975ed2bb75fbdfac6f53d3e8821a92e597a5731a598565c8777"
+      "sha256": "65ec6c6e7e25b40374a46df4a8e08037c4bf6b77749f3da22064053a84f5bf25"
     },
     {
       "path": "asset_tests/test_standby_pet_restore.py",

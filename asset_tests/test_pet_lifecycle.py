@@ -43,6 +43,16 @@ def test_pet_lifecycle():
         pet.switch_to_auto_schedule()
         assert pet.mode == "auto"
         assert pet.char_key in MEMBER_KEYS
+        assert pet._last_auto_date == pet.clock.now().date()
+
+        # Midnight rollover through the real switch_character (tests/test_auto_schedule_rollover.py)
+        import datetime as _dt
+        today_member = pet.char_key
+        pet.switch_character(MEMBER_KEYS[(MEMBER_KEYS.index(today_member) + 1) % 5], mode="auto")
+        pet._last_auto_date = pet.clock.now().date() - _dt.timedelta(days=1)
+        pet._check_auto_schedule_rollover()
+        assert pet.char_key == today_member, (pet.char_key, today_member)
+        assert pet._last_auto_date == pet.clock.now().date()
 
         # Test state transitions
         for state in ("walk", "cheer", "sleep", "idle"):

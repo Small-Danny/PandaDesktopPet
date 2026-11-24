@@ -575,6 +575,8 @@ class PandaPet:
         # Cameo: a guest member visits (L2, at most once per 30 min).
         self.cameo = CameoDirector(self.coord, clock=self.clock)
         self.coord.subscribe(self.cameo.on_coord_event)
+        # Day the auto rota was last applied; _tick_1s_body rolls over at midnight.
+        self._last_auto_date: datetime.date = self._auto_schedule_today()
         self.cameo_window: CameoActorWindow | None = None
         self._cameo_after: str | None = None
         self._cameo_phase: CameoPhase | None = None
@@ -1192,8 +1194,17 @@ class PandaPet:
             self.coord.cancel(self._debug_event_id,"debug_released")
             self._debug_event_id = None
 
+    def _auto_schedule_today(self) -> datetime.date:
+        """Today for the rota: the shared (debug-shiftable) clock once it exists."""
+        clock = getattr(self, "clock", None)
+        if clock is None:
+            clock = getattr(getattr(self, "calendar", None), "clock", None)
+        if clock is not None:
+            return clock.now().date()
+        return datetime.date.today()   # __init__ resolves the member before the clock exists
+
     def get_auto_character(self) -> str:
-        today = datetime.date.today()
+        today = PandaPet._auto_schedule_today(self)
         weekday = today.weekday()
         if weekday < 5:
             return MEMBER_KEYS[weekday]
@@ -1242,6 +1253,8 @@ class PandaPet:
         self.save_settings()
 
         self.load_character_frames(char_key)
+        if mode == "auto":   # marked once the member is really on stage; a failed load retries
+            self._last_auto_date = PandaPet._auto_schedule_today(self)
         self.coord.set_member(char_key)
         if getattr(self, "_festival_preview_active", False) and hasattr(self, "cancel_festival_preview"):
             self.cancel_festival_preview()
@@ -1357,6 +1370,41 @@ class PandaPet:
         self.save_settings()
         char_key = self.get_auto_character()
         self.switch_character(char_key, mode="auto")
+
+    def _auto_rollover_blocked(self) -> bool:
+        """Swapping the member now would break a scene: standby, cameo, drag, festival."""
+        coord = getattr(self, "coord", None)
+        return bool(
+            getattr(self, "standby_overlay", None) is not None
+            or getattr(self, "_standby_resume_pending", False)
+            or getattr(self, "_desktop_was_locked", False)
+            or getattr(self, "dragging", False)
+            or (coord is not None and coord.mode is not GlobalMode.NORMAL)
+            or getattr(self, "cameo_window", None) is not None
+            or getattr(self, "group_celebration", None) is not None
+            or getattr(self, "_festival_preview_active", False)
+        )
+
+    def _check_auto_schedule_rollover(self) -> bool:
+        """Midnight in auto mode: hand over to the new day's member. True if switched.
+
+        Deferred (date not marked) while a scene is up, so it completes on the
+        first plain desktop tick afterwards. Manual mode is never touched.
+        """
+        if getattr(self, "mode", "auto") != "auto":
+            return False
+        today = PandaPet._auto_schedule_today(self)
+        if getattr(self, "_last_auto_date", None) == today:
+            return False
+        if PandaPet._auto_rollover_blocked(self):
+            return False
+        target = self.get_auto_character()
+        if target != self.char_key:
+            self.switch_character(target, mode="auto")   # also marks _last_auto_date
+            return True
+        self._last_auto_date = today
+        self.build_menu()   # the menu's weekday label still names yesterday
+        return False
 
     def is_autostart_enabled(self) -> bool:
         return VBS_PATH.is_file()
@@ -2362,6 +2410,7 @@ class PandaPet:
             busy_check=self._is_warmup_busy,
             binary_alpha=bool(getattr(self.sprites, "binary_alpha", True)),
             edge_refine=bool(getattr(self.sprites, "edge_refine", False)),
+            registry=getattr(self.sprites, "registry", None),
         )
 
     def _start_standby_warmup(self) -> None:
@@ -2394,6 +2443,7 @@ class PandaPet:
             today=today,
             busy_check=self._is_standby_warmup_busy,
             active_member=self.char_key,
+            registry=getattr(self.sprites, "registry", None),
         )
 
     def _is_standby_warmup_busy(self) -> bool:
@@ -4528,6 +4578,7 @@ class PandaPet:
         # Periodic 60s persistence of companion time and natural satiety decay
         self._flush_periodic_companion_state(refresh_ui=True)
 
+        self._check_auto_schedule_rollover()   # before the calendar, so today's greetings name today's member
         self.poll_calendar()
         self._check_new_year_countdown()
         self.maybe_auto_cameo(os_idle)
@@ -5097,13 +5148,7 @@ class PandaPet:
                 pass
         self._loop_after.clear()
         widgets.clear()
-        if getattr(self, "_standby_warmup", None) is not None:
-            try:
-                self._standby_warmup.shutdown()
-            except Exception:
-                pass
-        if getattr(self, "_desktop_warmup", None) is not None:
-            self._desktop_warmup.shutdown()
+        self._shutdown_warmup_workers()
         surf = getattr(self, "layered_surface", None)
         if surf is not None:
             try:
@@ -5116,11 +5161,32 @@ class PandaPet:
         except Exception:
             pass
         self.root.destroy()
+        # Reclaim this lifetime's Tk garbage here, on the Tk thread, so no later
+        # background thread's GC pass finalizes it (Tcl_AsyncDelete, 0x80000003).
+        gc.collect()
         from app.cursor_manager import cleanup_cursor_files
         try:
             cleanup_cursor_files()
         except OSError:
             log.warning("Could not clean up temporary cursor files", exc_info=True)
+
+    def _shutdown_warmup_workers(self) -> None:
+        """Stop both warm-up workers and wait until their threads are gone (before root.destroy)."""
+        managers = [m for m in (getattr(self, "_standby_warmup", None), getattr(self, "_desktop_warmup", None))
+                    if m is not None]
+        for manager in managers:
+            try:
+                manager.request_shutdown()
+            except Exception:
+                log.exception("warmup shutdown request failed")
+        # Collect pending Tk garbage on this thread first: a worker that ran GC on it
+        # would block marshalling Tcl calls to us while we sit in join().
+        gc.collect()
+        for manager in managers:
+            try:
+                manager.join()
+            except Exception:
+                log.exception("warmup join failed")
 
     def _save_on_close(self) -> None:
         """Keep satiety (with the decay since the last 60 s tick) and companion time."""

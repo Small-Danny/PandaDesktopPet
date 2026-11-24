@@ -196,7 +196,10 @@ def unclipped_base_scale(images, scale: float) -> float:
 
 class SpriteLibrary:
     def __init__(self, resource_root: Path, display_px: int = DISPLAY_PX, equalize: bool = True,
-                 polish: bool = True, binary_alpha: bool = True, edge_refine: bool = False) -> None:
+                 polish: bool = True, binary_alpha: bool = True, edge_refine: bool = False,
+                 registry=None) -> None:
+        """``registry``: an AssetRegistry already parsed for this root (read-only, shareable
+        across threads); the warm-up workers reuse the pet's instead of re-decoding JSON."""
         self.resource_root = Path(resource_root)
         self.display_px = display_px
         self.equalize = equalize
@@ -213,7 +216,7 @@ class SpriteLibrary:
             from app.asset_images import AssetImageCache
             from app.engine.assets import AssetRegistry
 
-            self.registry = AssetRegistry(registry_path, self.resource_root)
+            self.registry = registry if registry is not None else AssetRegistry(registry_path, self.resource_root)
             self.cache = AssetImageCache(self.registry)
         except Exception:
             log.exception("asset registry unavailable (%s); using legacy manifests", registry_path)

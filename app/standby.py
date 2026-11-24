@@ -922,7 +922,16 @@ def _lower_current_thread_priority() -> None:
 
 
 class StandbyWarmupManager:
-    """Low-priority single-worker PIL background warmup (never touches Tk off main thread)."""
+    """Low-priority single-worker PIL background warmup (never touches Tk off main thread).
+
+    The worker must be gone before its owner destroys Tk: a worker that outlives the
+    root may run Python's cyclic GC and finalize Tk objects (or the interpreter
+    itself) off the Tk thread -> ``Tcl_AsyncDelete: async handler deleted by the
+    wrong thread`` (0x80000003). ``shutdown`` therefore joins for real.
+    """
+
+    THREAD_NAME = "StandbyWarmup"
+    SHUTDOWN_TIMEOUT_S = 10.0
 
     def __init__(self) -> None:
         self._lock = threading.Lock()
@@ -953,16 +962,35 @@ class StandbyWarmupManager:
             self._done_event.set()
             self._wakeup.set()
 
-    def shutdown(self, timeout: float = 1.5) -> None:
+    def request_shutdown(self) -> None:
+        """Non-blocking: every step of the running plan sees ``_stale`` and returns."""
         with self._lock:
             self._shutdown = True
             self._generation += 1
             self._plan = None
             self._done_event.set()
             self._wakeup.set()
+
+    def join(self, timeout: float | None = None) -> bool:
+        """Wait for the worker thread to exit; True when no worker is left alive."""
+        with self._lock:
             worker = self._worker
-        if worker is not None and worker.is_alive() and worker is not threading.current_thread():
-            worker.join(timeout=timeout)
+        if worker is None or worker is threading.current_thread():
+            return True
+        worker.join(timeout=self.SHUTDOWN_TIMEOUT_S if timeout is None else timeout)
+        if worker.is_alive():
+            log.warning("%s worker still alive after shutdown join", self.THREAD_NAME)
+            return False
+        return True
+
+    def is_worker_alive(self) -> bool:
+        with self._lock:
+            worker = self._worker
+        return worker is not None and worker.is_alive()
+
+    def shutdown(self, timeout: float | None = None) -> bool:
+        self.request_shutdown()
+        return self.join(timeout)
 
     def schedule(
         self,
@@ -977,6 +1005,7 @@ class StandbyWarmupManager:
         *,
         binary_alpha: bool = True,
         edge_refine: bool = False,
+        registry=None,
     ) -> int:
         with self._lock:
             if self._shutdown:
@@ -995,10 +1024,11 @@ class StandbyWarmupManager:
                 "active_member": active_member,
                 "binary_alpha": bool(binary_alpha),
                 "edge_refine": bool(edge_refine),
+                "registry": registry,   # the pet's parsed AssetRegistry (read-only) or None
             }
             self._done_event.clear()
             if self._worker is None or not self._worker.is_alive():
-                self._worker = threading.Thread(target=self._run_loop, name="StandbyWarmup", daemon=True)
+                self._worker = threading.Thread(target=self._run_loop, name=self.THREAD_NAME, daemon=True)
                 self._worker.start()
             self._wakeup.set()
             return gen
@@ -1060,7 +1090,11 @@ class StandbyWarmupManager:
                 raise _WarmupAbort()
 
         # 1. Active / expected standby wallpaper only (other wallpapers stay on-demand).
+        if self._stale(gen):
+            return
         wallpapers = load_wallpapers(root)
+        if self._stale(gen):
+            return
         target_wp = None
         if active_scene:
             target_wp = next((w for w in wallpapers if w.key == active_scene), None)
@@ -1081,7 +1115,9 @@ class StandbyWarmupManager:
 
         # 2. Five members' base parade sprites (PIL only into PREPARED_IMAGES).
         library = SpriteLibrary(root, display_px=sprite_px, binary_alpha=STANDBY_BINARY_ALPHA,
-                                edge_refine=STANDBY_EDGE_REFINE)
+                                edge_refine=STANDBY_EDGE_REFINE, registry=plan.get("registry"))
+        if self._stale(gen):
+            return
         scales: dict[str, float] = {}
         first = plan.get("active_member") or ("eunji" if active_scene in (DOME_EUNJI_SCENE, FORTUNE_ROOM_SCENE) else None)
         roster = sorted(MEMBER_ROSTER, key=lambda item: item[0] != first)
