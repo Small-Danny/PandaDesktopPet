@@ -4,7 +4,7 @@
 
 #define MyAppName "Apink 熊貓桌面寵物 (PandaDesktopPet)"
 #define MyAppShortName "PandaDesktopPet"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.2"
 #define MyAppPublisher "PandaDesktopPet Project"
 #define MyAppExeName "PandaDesktopPet.exe"
 
@@ -12,6 +12,8 @@
 AppId={{8E9A7A5D-4C2B-4E19-9D6E-2A7F8419A011}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
+VersionInfoVersion={#MyAppVersion}
+VersionInfoProductVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 DefaultDirName={localappdata}\Programs\{#MyAppShortName}

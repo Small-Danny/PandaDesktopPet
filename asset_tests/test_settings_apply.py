@@ -24,12 +24,34 @@ def _pet(**settings):
                  "set_sedentary_interval", "test_sedentary_alert", "set_hourly_range"):
         setattr(pet, name, lambda *a, _n=name: calls.append((_n,) + a))
     pet.save_settings = lambda: calls.append(("save",)) or True
-    for name in ("apply_setting", "reset_settings", "preview_reminder", "settings_state"):
+    for name in ("apply_setting", "reset_settings", "preview_reminder", "settings_state", "set_notify_bubble_style"):
         setattr(pet, name, getattr(PandaPet, name).__get__(pet))
+    pet.build_menu = mock.Mock()
+    pet._refresh_settings_panel = mock.Mock()
+    pet._toast = mock.Mock()
     return pet, calls
 
 
 class ApplySettingTest(unittest.TestCase):
+    def test_notification_style_validates_and_saves_only_changes(self) -> None:
+        pet, calls = _pet()
+        self.assertEqual(pet.settings_state()["notify_bubble_style"], "banner")
+        for bad in ("unknown", None, [], True):
+            self.assertFalse(pet.apply_setting("notify_bubble_style", bad))
+        self.assertTrue(pet.apply_setting("notify_bubble_style", "banner"))
+        self.assertEqual(calls, [])
+        self.assertTrue(pet.apply_setting("notify_bubble_style", "sticky"))
+        self.assertEqual(pet.settings_state()["notify_bubble_style"], "sticky")
+        self.assertEqual(calls, [("save",)])
+        pet.build_menu.assert_called_once_with()
+        pet._toast.assert_not_called()
+        self.assertTrue(pet.set_notify_bubble_style("standard"))
+        self.assertEqual(pet.settings_state()["notify_bubble_style"], "standard")
+        pet._refresh_settings_panel.assert_called_once_with()
+        self.assertIn("一般樣式", pet._toast.call_args.args[0])
+        self.assertTrue(pet.reset_settings("reminders"))
+        self.assertEqual(pet.settings_state()["notify_bubble_style"], "banner")
+
     def test_valid_values_go_to_the_existing_setters(self) -> None:
         pet, calls = _pet()
         for key, value, expected in (("bubble_theme", "classic", ("set_bubble_theme", "classic")),

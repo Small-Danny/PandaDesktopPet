@@ -39,6 +39,11 @@ _BINARIZE_LUT = tuple(255 if a >= 128 else 0 for a in range(256))
 _FRAME_CACHE_MAX = 24
 _FRAME_CACHE: OrderedDict[tuple, Image.Image] = OrderedDict()
 _AVATAR_THUMB_MAX = 16
+# Windows notification relay looks: "standard" = same card as any quote,
+# "banner" = solid badge chip + two-layer inner card, "sticky" = warm note card.
+NOTIFY_STYLES = ("standard", "banner", "sticky")
+STICKY_NOTE_FILL = "#fff3c4"
+STICKY_FOLD_FILL = "#f3d98a"
 _AVATAR_THUMB_CACHE: OrderedDict[tuple[str, int, tuple | None], Image.Image] = OrderedDict()
 
 
@@ -148,6 +153,25 @@ def _render_frame(nine_path: Path, frame: FrameLayout, geo) -> Image.Image:
     while len(_FRAME_CACHE) > _FRAME_CACHE_MAX:
         _FRAME_CACHE.popitem(last=False)
     return result
+
+
+def _mix(a: str, b: str, t: float) -> str:
+    """Hex colour a*(1-t) + b*t (colour-key windows cannot blend with alpha)."""
+    ra = [int(a[i:i + 2], 16) for i in (1, 3, 5)]
+    rb = [int(b[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(f"{round(x * (1 - t) + y * t):02x}" for x, y in zip(ra, rb))
+
+
+class _MessageLayout:
+    """Wrapped message: optional bold lead (notification title) + body lines."""
+    __slots__ = ("lead", "body", "lead_h", "sep", "desired")
+
+    def __init__(self, lead, body, lead_h, sep, desired):
+        self.lead, self.body, self.lead_h, self.sep, self.desired = lead, body, lead_h, sep, desired
+
+    @property
+    def rows(self) -> int:
+        return len(self.lead) + len(self.body)
 
 
 def _binarize(image: Image.Image) -> Image.Image:
@@ -276,11 +300,15 @@ class KawaiiSpeechBubble:
                  duration_ms: int = 5000, on_close: Callable[[], None] | None = None,
                  *, sprite_h: int = 192, desktop: WindowsDesktopAdapter | None = None,
                  theme: BubbleTheme | None = None,
-                 text_size: str = "medium"):
+                 text_size: str = "medium",
+                 notify_style: str = "standard",
+                 notify_tag: str = ""):
         self.parent, self.on_close = parent, on_close
         self.header, self.message = header, message
         self.theme = theme or get_theme("classic")
         self.text_size = text_size if text_size in TEXT_SIZE_FONTS else "medium"
+        self.notify_style = notify_style if notify_style in NOTIFY_STYLES else "standard"
+        self.notify_tag = notify_tag or "⚠"
         fonts = TEXT_SIZE_FONTS[self.text_size]
         self._closed, self.timer, self.icon_thumb = False, None, None
         self._image_refs, self._emoji_images = [], {}
@@ -306,12 +334,21 @@ class KawaiiSpeechBubble:
         self.f_title = tkfont.Font(root=self.window,family="Microsoft JhengHei",size=fonts["title"],weight="bold")
         self.f_message = tkfont.Font(root=self.window,family="Microsoft JhengHei",size=fonts["message"])
         self.f_small = tkfont.Font(root=self.window,family="Microsoft JhengHei",size=fonts["small"])
+        if self.notify_style == "standard":
+            self.f_body,self.f_lead,self.f_chip_strong = self.f_message,self.f_message,self.f_small
+        else:   # notifications: one step larger, bold, high contrast
+            self.f_body = tkfont.Font(root=self.window,family="Microsoft JhengHei",size=-self._s((fonts["message"]+1)*4/3),weight="bold")
+            self.f_lead = tkfont.Font(root=self.window,family="Microsoft JhengHei",size=-self._s((fonts["message"]+2)*4/3),weight="bold")
+            self.f_chip_strong = tkfont.Font(root=self.window,family="Microsoft JhengHei",size=-self._s((fonts["small"]+1)*4/3),weight="bold")
         sw, sh = self.window.winfo_screenwidth(), self.window.winfo_screenheight()
         self.desktop = desktop or WindowsDesktopAdapter(fallback_bounds=WorkArea(0,0,sw,sh))
         self.work_area = area = self.desktop.work_area_for_point(target_x+sprite_w//2,target_y+sprite_h//2)
         self.title_lh = self.f_title.metrics("linespace")+self._s(5)
         self.small_lh = self.f_small.metrics("linespace")+self._s(4)
         self.msg_lh = self.f_message.metrics("linespace")+self._s(6)
+        self.body_lh = self.f_body.metrics("linespace")+self._s(6)
+        self.lead_lh = self.f_lead.metrics("linespace")+self._s(6)
+        self.strong_lh = self.f_chip_strong.metrics("linespace")+self._s(4)
         self.emoji_size = max(self._s(12),self.f_message.metrics("linespace")-self._s(2))
         has_icon = False
         if icon_path is not None:
@@ -425,12 +462,14 @@ class KawaiiSpeechBubble:
             return boxes, y
         measured = []
         min_w = self._s(20)
-        for chip in chips:
-            lines = layout_lines(chip,max(min_w,inner_w-min_w),self.f_small.measure,self.emoji_size)
-            text_w = max((self._line_width(line,self.f_small) for line in lines),default=0)
-            measured.append((chip,lines,text_w))
+        for index,chip in enumerate(chips):
+            # Banner style: the last chip (the "Windows notification" badge) is a solid pill.
+            font,extra,_,_ = self._chip_style(index,len(chips))
+            lines = layout_lines(chip,max(min_w,inner_w-min_w-extra),font.measure,self.emoji_size)
+            text_w = max((self._line_width(line,font) for line in lines),default=0)+extra
+            measured.append((lines,text_w))
         n = len(measured)
-        sum_text_w = sum(m[2] for m in measured)
+        sum_text_w = sum(text_w for _,text_w in measured)
         pad_x, gap_x = self._s(10), self._s(8)
         if n > 1:
             std_need = sum_text_w + n * self._s(20) + (n - 1) * gap_x
@@ -444,15 +483,124 @@ class KawaiiSpeechBubble:
                         break
         x,row_h = x0,0
         chip_vpad, row_gap = self._s(10), self._s(7)
-        for chip,lines,text_w in measured:
+        for index,(lines,text_w) in enumerate(measured):
             chip_w = min(inner_w,text_w+pad_x*2)
-            chip_h = len(lines)*self.small_lh+chip_vpad
+            chip_h = len(lines)*self._chip_style(index,n)[2]+chip_vpad
             if x>x0 and x+chip_w>x1:
                 x,y,row_h = x0,y+row_h+row_gap,0
             boxes.append((x,y,chip_w,chip_h,lines))
             x += chip_w+gap_x
             row_h = max(row_h,chip_h)
         return boxes,(y+row_h if chips else y)
+
+    def _chip_style(self, index: int, count: int):
+        """(font, extra width for the dot, line height, strong) of chip ``index``."""
+        if self.notify_style == "banner" and index == count-1:
+            return self.f_chip_strong,self._s(12),self.strong_lh,True
+        return self.f_small,0,self.small_lh,False
+
+    def _draw_chips(self, boxes, dy: int = 0) -> None:
+        for index,(x,y,cw,ch,lines) in enumerate(boxes):
+            font,extra,line_h,strong = self._chip_style(index,len(boxes))
+            y += dy
+            if strong:
+                fill = _mix(self.theme.badge_color,"#000000",0.25)
+                _draw_round_rect(self.canvas,x,y,x+cw,y+ch,ch/2,fill=fill,outline=fill,tags="notify_badge")
+            else:
+                _draw_round_rect(self.canvas,x,y,x+cw,y+ch,self._s(7),fill=self.theme.chip_fill,outline=self.theme.chip_outline)
+            text_w = max((self._line_width(line,font) for line in lines),default=0)+extra
+            pad_left = max(self._s(3),(cw-text_w)//2)
+            if strong:
+                r,cy = self._s(3),y+ch/2
+                self.canvas.create_oval(x+pad_left,cy-r,x+pad_left+2*r,cy+r,fill="white",outline="",tags="notify_badge")
+            self._draw_lines(self.canvas,lines,x+pad_left+extra,y+self._s(5),font,
+                             "white" if strong else self.theme.chip_text,line_h)
+
+    def _message_layout(self, message: str, width: float) -> _MessageLayout:
+        """Wrap the message; notification styles put the first line (the title) in a bold lead."""
+        sticky = self.notify_style == "sticky"
+        width = max(self._s(20),width-(self._s(2) if sticky else 0))
+        if self.notify_style == "standard":
+            body = layout_lines(message,width,self.f_message.measure,self.emoji_size)
+            return _MessageLayout((),body,0,0,max(self._s(44),len(body)*self.msg_lh+self._s(20)))
+        first,_,rest = message.replace("\r\n","\n").replace("\r","\n").partition("\n")
+        if rest.strip() and first.strip():
+            lead = layout_lines(first,width,self.f_lead.measure,self.emoji_size)
+            body = layout_lines(rest,width,self.f_body.measure,self.emoji_size)
+            sep = self._s(12) if self.notify_style == "banner" else self._s(6)
+        else:   # one line only (privacy mode, no body): a single region, no empty title band
+            lead,sep = (),0
+            body = layout_lines(message,width,self.f_body.measure,self.emoji_size)
+        lead_h = len(lead)*self.lead_lh
+        # Keep the folded corner below the last line, including after scrolling.
+        bottom_pad = self._s(12) if sticky else 0
+        desired = max(self._s(44),lead_h+sep+len(body)*self.body_lh+self._s(20)+bottom_pad)
+        return _MessageLayout(lead,body,lead_h,sep,desired)
+
+    def _card_colors(self):
+        """(fill, outline, outline width, canvas bg, lead colour, body colour) of the inner card."""
+        th = self.theme
+        if self.notify_style == "banner":
+            return ("#ffffff",th.badge_color,2*self.ui_scale,"#ffffff",
+                    _mix("#000000",th.badge_color,0.55),"#121212")
+        if self.notify_style == "sticky":
+            return (STICKY_NOTE_FILL,th.header_color,2*self.ui_scale,STICKY_NOTE_FILL,
+                    _mix("#000000",th.header_color,0.45),"#2a1e0c")
+        return th.inner_card_fill,th.inner_card_outline,1,th.inner_card_fill,th.text_color,th.text_color
+
+    def _sticky_tag_layout(self, max_width):
+        """(lines, width, height) of the sticky note's "new notification" tag."""
+        pad = self._s(16)
+        lines = layout_lines(self.notify_tag,max(1,max_width-pad),self.f_chip_strong.measure,self.emoji_size)[:1]
+        width = min(max_width,self._line_width(lines[0],self.f_chip_strong)+pad) if lines else pad
+        return lines,width,self.strong_lh+self._s(4)
+
+    def _sticky_room(self) -> int:
+        """Space above the sticky note for its tag (the tag overlaps the note edge by 3 px)."""
+        return self.strong_lh+self._s(4)-self._s(3) if self.notify_style == "sticky" else 0
+
+    def _draw_message_card(self, x0, y0, x1, y1, inset, msg_w, layout, text_x, text_y):
+        """Inner card and its scrolling message canvas (returned).
+
+        ``inset`` = (x, y) gap between the card edge and the message canvas.
+        """
+        ix,iy = inset
+        fill,outline,width,bg,lead_c,body_c = self._card_colors()
+        sticky = self.notify_style == "sticky"
+        dy = self._s(3) if sticky else 0
+        if sticky:  # light paper shadow (solid: colour-key windows have no alpha)
+            dx = self._s(2)
+            shadow = _mix(self.theme.bg_fill,"#000000",0.18)
+            _draw_round_rect(self.canvas,x0+dx,y0+dy,x1,y1,self._s(8),fill=shadow,outline=shadow,tags="notify_card")
+            x1,y1 = x1-dx,y1-dy
+            msg_w -= dx
+        tags = "notify_card" if self.notify_style != "standard" else ""
+        _draw_round_rect(self.canvas,x0,y0,x1,y1,self._s(8 if sticky else 10),fill=fill,outline=outline,width=width,tags=tags)
+        view_h = max(1,y1-y0-2*iy)
+        mc = tk.Canvas(self.canvas,width=msg_w,height=view_h,bg=bg,highlightthickness=0)
+        self.canvas.create_window(x0+ix,y0+iy,anchor="nw",window=mc,width=msg_w,height=view_h)
+        if self.notify_style == "banner" and layout.lead:
+            split = text_y+layout.lead_h+layout.sep//2
+            mc.create_rectangle(0,0,msg_w+1,split,fill=_mix("#ffffff",self.theme.badge_color,0.16),outline="",tags="lead_band")
+            mc.create_line(0,split,msg_w+1,split,fill=_mix("#ffffff",self.theme.badge_color,0.55),
+                           width=max(1,round(self.ui_scale)),tags="lead_band")
+        if layout.lead:
+            self._draw_lines(mc,layout.lead,text_x,text_y,self.f_lead,lead_c,self.lead_lh)
+        standard = self.notify_style == "standard"
+        body_font,body_lh = (self.f_message,self.msg_lh) if standard else (self.f_body,self.body_lh)
+        self._draw_lines(mc,layout.body,text_x,text_y+layout.lead_h+layout.sep,body_font,body_c,body_lh)
+        scroll_h = max(view_h,layout.desired-2*iy-dy)
+        if sticky:
+            f = self._s(12)
+            mc.create_polygon(msg_w,scroll_h,msg_w,scroll_h-f,msg_w-f,scroll_h-f,fill=STICKY_FOLD_FILL,
+                              outline=self.theme.header_color,tags="sticky_fold")
+            lines,tw,th = self._sticky_tag_layout(x1-x0-self._s(20))
+            tx,ty = x0+self._s(10),y0-th+self._s(3)
+            color = _mix(self.theme.header_color,"#000000",0.25)
+            _draw_round_rect(self.canvas,tx,ty,tx+tw,ty+th,th/2,fill=color,outline=color,tags="sticky_tag")
+            self._draw_lines(self.canvas,lines,tx+self._s(8),ty+self._s(3),self.f_chip_strong,"white",self.strong_lh)
+        mc.configure(scrollregion=(0,0,msg_w,scroll_h))
+        return mc
 
     def _place(self, area, w, target_x, target_y, sprite_w, sprite_h):
         """Window position next to the sprite, kept inside the monitor work area."""
@@ -475,6 +623,7 @@ class KawaiiSpeechBubble:
         widths = [w for w in candidate_widths if w <= max_w] or [max_w]
         icon_box,close_d,gap = self._s(44),self._s(24),self._s(8)
         min_w, card_pad = self._s(20), self._s(6)
+        chip_inset = self._s(2) if self.notify_style != "standard" else 0
         for w in widths:
             card_w = w-self._s(12)
             geo = frame.geometry(card_w,0)
@@ -483,26 +632,26 @@ class KawaiiSpeechBubble:
             title_x = sx0+(icon_box+self._s(10) if has_icon else 0)
             title_w = max(min_w,sx1-close_d-gap-title_x)
             title_lines = layout_lines(header,title_w,self.f_title.measure,self.emoji_size) if header else ()
-            msg_lines = layout_lines(message,max(min_w,inner_w-self._s(20)),self.f_message.measure,self.emoji_size)
-            chip_boxes,_ = self._layout_chips(sub_badge,sx0,sx1,0)
+            msg = self._message_layout(message,inner_w-self._s(20))
+            chip_boxes,_ = self._layout_chips(sub_badge,sx0+chip_inset,sx1-chip_inset,0)
             chip_rows = len({b[1] for b in chip_boxes})
-            if w == widths[-1] or (len(title_lines) <= 1 and len(msg_lines) <= 2 and chip_rows <= 1):
+            if w == widths[-1] or (len(title_lines) <= 1 and msg.rows <= 2 and chip_rows <= 1):
                 break
         # Stack top -> bottom in safe-area coordinates (y = 0 at the safe top).
         head_h = max(icon_box if has_icon else 0,len(title_lines)*self.title_lh,close_d)
-        chip_boxes,chips_bottom = self._layout_chips(sub_badge,sx0,sx1,head_h+gap)
-        msg_top = (chips_bottom if chip_boxes else head_h)+gap
+        chip_boxes,chips_bottom = self._layout_chips(sub_badge,sx0+chip_inset,sx1-chip_inset,head_h+gap)
+        msg_top = (chips_bottom if chip_boxes else head_h)+gap+self._sticky_room()
         badge_lines = layout_lines(badge_text,max(min_w,inner_w-self._s(8)),self.f_small.measure,self.emoji_size) if badge_text else ()
         footer_h = len(badge_lines)*self.small_lh+gap if badge_text else 0
-        desired = max(self._s(44),len(msg_lines)*self.msg_lh+self._s(20))
+        desired = msg.desired
         # Height budget: the window must fit the monitor; the message scrolls beyond that.
         decor_h = geo.height-(sy1-sy0)
         max_content = max(self._s(60),sh-20-self._s(24)-decor_h)
         viewport_limit = max(self._s(36),min(self._s(360),max_content-msg_top-footer_h))
         self.scrollable = desired>viewport_limit
         if self.scrollable:
-            msg_lines = layout_lines(message,max(min_w,inner_w-self._s(38)),self.f_message.measure,self.emoji_size)
-            desired = max(self._s(44),len(msg_lines)*self.msg_lh+self._s(20))
+            msg = self._message_layout(message,inner_w-self._s(38))
+            desired = msg.desired
         message_h = min(desired,viewport_limit)
         content_h = msg_top+message_h+footer_h
         geo = frame.geometry(card_w,content_h)
@@ -537,19 +686,12 @@ class KawaiiSpeechBubble:
         self.canvas.create_line(X1-self._s(8),cy0+self._s(8),X1-self._s(16),cy0+self._s(16),
                                 fill=self.theme.close_btn_cross,width=1.5*self.ui_scale,tags="close_btn")
         self.chip_boxes = [(x+ox,y+Y0,cw,ch,lines) for x,y,cw,ch,lines in chip_boxes]
-        for x,y,cw,ch,lines in self.chip_boxes:
-            _draw_round_rect(self.canvas,x,y,x+cw,y+ch,self._s(7),fill=self.theme.chip_fill,outline=self.theme.chip_outline)
-            text_w = max((self._line_width(line,self.f_small) for line in lines),default=0)
-            pad_left = max(self._s(4),(cw-text_w)//2)
-            self._draw_lines(self.canvas,lines,x+pad_left,y+self._s(5),self.f_small,self.theme.chip_text,self.small_lh)
+        self._draw_chips(self.chip_boxes)
         my = Y0+msg_top
-        _draw_round_rect(self.canvas,X0,my,X1,my+message_h,self._s(10),fill=self.theme.inner_card_fill,outline=self.theme.inner_card_outline)
         msg_w = inner_w-self._s(8)-(self._s(18) if self.scrollable else 0)
         msg_inset = self._s(4)
-        self.message_canvas = tk.Canvas(self.canvas,width=msg_w,height=message_h-self._s(8),bg=self.theme.inner_card_fill,highlightthickness=0)
-        self.canvas.create_window(X0+msg_inset,my+msg_inset,anchor="nw",window=self.message_canvas,width=msg_w,height=message_h-self._s(8))
-        self._draw_lines(self.message_canvas,msg_lines,self._s(6),self._s(6),self.f_message,self.theme.text_color,self.msg_lh)
-        self.message_canvas.configure(scrollregion=(0,0,msg_w,desired-self._s(8)))
+        self.message_canvas = self._draw_message_card(X0,my,X1,my+message_h,(msg_inset,msg_inset),msg_w,msg,
+                                                      self._s(6),self._s(6))
         if self.scrollable:
             scrollbar = tk.Scrollbar(self.canvas,orient="vertical",command=self.message_canvas.yview)
             self.message_canvas.configure(yscrollcommand=scrollbar.set)
@@ -565,7 +707,7 @@ class KawaiiSpeechBubble:
                       header, message, sub_badge, badge_text, has_icon):
         """Plain vector card (classic theme, or when the frame art is unusable)."""
         sw,sh = area.width,area.height
-        title_lh,small_lh,msg_lh = self.title_lh,self.small_lh,self.msg_lh
+        title_lh,small_lh = self.title_lh,self.small_lh
         candidate_widths = getattr(self, "framed_widths", FRAMED_WIDTHS)
         w = min(candidate_widths[-1], max(self._s(120), sw - 20))
         margin_x = self._s(32)
@@ -577,16 +719,16 @@ class KawaiiSpeechBubble:
         y = max(self._s(66) if has_icon else self._s(26)+title_h,self._s(48),self._s(26)+title_h)
         self.chip_boxes, chips_bottom = self._layout_chips(sub_badge,margin_x,w-margin_x,y)
         y = chips_bottom+self._s(14) if self.chip_boxes else y+self._s(8)
-        card_top = y
+        card_top = y+self._sticky_room()
         badge_lines = layout_lines(badge_text,max(min_w,inner_w-self._s(20)),self.f_small.measure,self.emoji_size) if badge_text else ()
         footer_h = len(badge_lines)*small_lh+self._s(22) if badge_text else self._s(16)
         viewport_limit = min(self._s(360),max(self._s(36),sh-self._s(40)-card_top-footer_h-self._s(24)))
-        msg_lines = layout_lines(message,max(min_w,inner_w-self._s(20)),self.f_message.measure,self.emoji_size)
-        desired = max(self._s(44),len(msg_lines)*msg_lh+self._s(20))
+        msg = self._message_layout(message,inner_w-self._s(20))
+        desired = msg.desired
         self.scrollable = desired>viewport_limit
         if self.scrollable:
-            msg_lines = layout_lines(message,max(min_w,inner_w-self._s(38)),self.f_message.measure,self.emoji_size)
-            desired = max(self._s(44),len(msg_lines)*msg_lh+self._s(20))
+            msg = self._message_layout(message,inner_w-self._s(38))
+            desired = msg.desired
         message_h = min(desired,viewport_limit)
         body_h = card_top+message_h+footer_h
         h = body_h+self._s(24)
@@ -612,19 +754,11 @@ class KawaiiSpeechBubble:
                                 fill=self.theme.close_btn_cross,width=1.5*self.ui_scale,tags="close_btn")
         self.canvas.create_line(w-self._s(29),self._s(23)+offset,w-self._s(37),self._s(31)+offset,
                                 fill=self.theme.close_btn_cross,width=1.5*self.ui_scale,tags="close_btn")
-        for cx,cy,cw,ch,lines in self.chip_boxes:
-            _draw_round_rect(self.canvas,cx,cy+offset,cx+cw,cy+ch+offset,self._s(7),fill=self.theme.chip_fill,outline=self.theme.chip_outline)
-            text_w = max((self._line_width(line,self.f_small) for line in lines),default=0)
-            pad_left = max(self._s(4),(cw-text_w)//2)
-            self._draw_lines(self.canvas,lines,cx+pad_left,cy+self._s(5)+offset,self.f_small,self.theme.chip_text,small_lh)
+        self._draw_chips(self.chip_boxes,offset)
         card_x = self._s(24)
-        _draw_round_rect(self.canvas,card_x,card_top+offset,w-card_x,card_top+message_h+offset,
-                         self._s(10),fill=self.theme.inner_card_fill,outline=self.theme.inner_card_outline)
         msg_w = inner_w-(self._s(18) if self.scrollable else 0)
-        self.message_canvas = tk.Canvas(self.canvas,width=msg_w,height=message_h-self._s(8),bg=self.theme.inner_card_fill,highlightthickness=0)
-        self.canvas.create_window(self._s(32),card_top+self._s(4)+offset,anchor="nw",window=self.message_canvas,width=msg_w,height=message_h-self._s(8))
-        self._draw_lines(self.message_canvas,msg_lines,self._s(10),self._s(8),self.f_message,self.theme.text_color,msg_lh)
-        self.message_canvas.configure(scrollregion=(0,0,msg_w,desired-self._s(8)))
+        self.message_canvas = self._draw_message_card(card_x,card_top+offset,w-card_x,card_top+message_h+offset,
+                                                      (self._s(8),self._s(4)),msg_w,msg,self._s(10),self._s(8))
         if self.scrollable:
             scrollbar = tk.Scrollbar(self.canvas,orient="vertical",command=self.message_canvas.yview)
             self.message_canvas.configure(yscrollcommand=scrollbar.set)

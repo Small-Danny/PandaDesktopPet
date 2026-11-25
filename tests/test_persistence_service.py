@@ -24,6 +24,18 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(runtime["feed_count"], 0)
         self.assertEqual(list(self.root.iterdir()), [])
 
+    def test_notification_style_defaults_on_legacy_load_and_round_trips(self):
+        (self.root / "settings.json").write_text('{"mode":"manual"}', encoding="utf-8")
+        self.assertEqual(self.service.load()[0]["notify_bubble_style"], "banner")
+        for style in ("sticky", "standard", "banner"):
+            self.service.save({"notify_bubble_style": style}, {})
+            self.assertEqual(PersistenceService(self.root).load()[0]["notify_bubble_style"], style)
+        saved = (self.root / "settings.json").read_bytes()
+        for bad in ("unknown", [], None):
+            with self.assertRaisesRegex(ValueError, "notify_bubble_style"):
+                self.service.save({"notify_bubble_style": bad}, {})
+        self.assertEqual((self.root / "settings.json").read_bytes(), saved)
+
     def test_first_migration_preserves_settings_and_stats_idempotently(self):
         legacy = {"mode": "manual", "manual_character": "bomi", "feed_count": 447,
                   "cheer_passion": 3450, "companion_start_time": 123.5, "extension": "保留"}

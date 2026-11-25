@@ -45,8 +45,9 @@ def capture_inputs(root: Path) -> dict:
                     "tools/runtime_manifest.py", "tools/build_provenance.py"))
     if (root / "tools/pack_assets.py").is_file():
         sources.add("tools/pack_assets.py")
-    if (root / "README_PORTABLE.txt").is_file():
-        sources.add("README_PORTABLE.txt")
+    for path in ("README_PORTABLE.txt", "installer/PandaDesktopPet.iss"):
+        if (root / path).is_file():
+            sources.add(path)
     paths = sorted(sources | set(runtime_files(root)))
     hashes = {}
     for rel in paths:

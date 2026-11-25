@@ -138,7 +138,7 @@ from app.cameo_view import CameoActorWindow
 from app.birthday_dialog import BirthdayDialog, DEFAULT_NICKNAME, format_birthday, read_birthday
 from app.bubble_layout import is_emoji
 from app.status_card import PandaStatusCard, get_passion_tier
-from app.storage.settings import PersistenceService, VALID_STANDBY_CLOCK_POSITIONS
+from app.storage.settings import PersistenceService, VALID_NOTIFY_BUBBLE_STYLES, VALID_STANDBY_CLOCK_POSITIONS
 from app.tray import PandaSystemTray
 from app.hotkey import GlobalHotkeyManager
 
@@ -249,7 +249,7 @@ SETTINGS_DEFAULTS = {
     "appearance": {"bubble_theme": "auto", "pet_size": "medium", "text_size": "medium",
                    "standby_clock_position": "top_right"},
     "reminders": {"hourly_chime": True, "hourly_start": 9, "hourly_end": 22,
-                  "sedentary_interval_min": 60, "sedentary_message": ""},
+                  "sedentary_interval_min": 60, "sedentary_message": "", "notify_bubble_style": "banner"},
 }
 
 
@@ -1537,6 +1537,7 @@ class PandaPet:
         bubble_theme = get_theme_for_member(speaker, cur_theme_mode)
         size = req.anchor_size
         target_w, target_h = size if size and size[0] > 0 and size[1] > 0 else (self.width, self.height)
+        is_relay = req.kind == "notify.relay"
         bubble = KawaiiSpeechBubble(
             parent=self.window,
             target_x=req.anchor[0] if req.anchor else self.x,
@@ -1551,6 +1552,8 @@ class PandaPet:
             duration_ms=duration_ms,
             theme=bubble_theme,
             text_size=self.settings.get("text_size", "medium"),
+            notify_style=self.settings.get("notify_bubble_style", "banner") if is_relay else "standard",
+            notify_tag=t("notify_sticky_tag", self.lang) if is_relay else "",
             on_close=lambda: self._on_bubble_closed(bubble),
         )
         self.active_bubble = bubble
@@ -1981,6 +1984,20 @@ class PandaPet:
 
     toggle_notify_privacy_mode = toggle_notify_privacy
 
+    def set_notify_bubble_style(self, style_key: str, *, silent: bool = False) -> bool:
+        if not isinstance(style_key, str) or style_key not in VALID_NOTIFY_BUBBLE_STYLES:
+            return False
+        if style_key == self.settings.get("notify_bubble_style", "banner"):
+            return True
+        self.settings["notify_bubble_style"] = style_key
+        self.save_settings()
+        self.build_menu()
+        if not silent:
+            self._refresh_settings_panel()
+            label = t(f"notify_style_{style_key}", self.lang)
+            self._toast(t("notify_bubble_style_status", self.lang, style=label), duration_ms=2500)
+        return True
+
     def clear_recent_notifications(self) -> None:
         """Empties the pet's RAM list only; the Windows notification centre is not touched."""
         self.recent_notifications.clear()
@@ -2260,6 +2277,8 @@ class PandaPet:
                 return False
             if value != bool(self.settings.get("notify_privacy_mode", False)):
                 self.toggle_notify_privacy()
+        elif key == "notify_bubble_style":
+            return self.set_notify_bubble_style(value, silent=True)
         else:
             return False
         return True

@@ -27,11 +27,14 @@ DEFAULT_SETTINGS = {
     "text_size": "medium",
     "mouse_cursor": "paw_smooth",
     "fortune_reduced_motion": False,
+    "notify_bubble_style": "banner",
 }
 VALID_PET_SIZES = frozenset({"small", "medium", "large"})
 VALID_TEXT_SIZES = frozenset({"small", "medium", "large"})
 VALID_STANDBY_CLOCK_POSITIONS = frozenset({"top_right", "top_left", "hidden"})
 VALID_MOUSE_CURSORS = frozenset({"system", "paw_smooth", "mitten_smooth", "paw_pixel", "mitten_pixel"})
+# Windows notification relay bubble: banner (default) / sticky note / standard (highlight off).
+VALID_NOTIFY_BUBBLE_STYLES = frozenset({"banner", "sticky", "standard"})
 DEFAULT_RUNTIME = {
     "fortune_salt": "",
     "fortune_daily": None,
@@ -90,6 +93,8 @@ class PersistenceService:
                 raise ValueError(f"invalid standby_clock_position: {data['standby_clock_position']}")
             if "mouse_cursor" in data and data["mouse_cursor"] not in VALID_MOUSE_CURSORS:
                 raise ValueError(f"invalid mouse_cursor: {data['mouse_cursor']}")
+            if "notify_bubble_style" in data and data["notify_bubble_style"] not in VALID_NOTIFY_BUBBLE_STYLES:
+                raise ValueError(f"invalid notify_bubble_style: {data['notify_bubble_style']}")
         elif DEFAULT_SETTINGS.keys() & data.keys():
             raise ValueError("settings fields must be stored in settings.json")
         if "festival_welcome_seen" in data:

@@ -24,6 +24,7 @@ from app.bubble_themes import THEMES, get_theme
 from app.i18n import get_member_display_name, get_theme_display_name
 from app.platform.win32 import WindowsDesktopAdapter, WorkArea, scale_canvas, ui_scale
 from app.status_card import MEMBER_THEMES
+from app.storage.settings import VALID_NOTIFY_BUBBLE_STYLES
 
 BG_TRANSPARENT = "#ff00fe"
 ROOT = Path(__file__).resolve().parent.parent
@@ -41,6 +42,7 @@ PANEL_DEFAULTS: dict[str, dict[str, Any]] = {
         "hourly_end": 22,
         "sedentary_interval_min": 60,
         "sedentary_message": "",
+        "notify_bubble_style": "banner",
     },
 }
 
@@ -237,6 +239,10 @@ PANEL_I18N: dict[str, dict[str, str]] = {
     },
     "privacy_on": {"zh_TW": "🔒 遮罩開啟", "ko": "🔒 마스크 켜짐", "en": "🔒 Mask ON"},
     "privacy_off": {"zh_TW": "🔓 遮罩關閉", "ko": "🔓 마스크 꺼짐", "en": "🔓 Mask OFF"},
+    "notify_bubble_style": {"zh_TW": "通知氣泡樣式", "ko": "알림 말풍선 스타일", "en": "Notification Bubble Style"},
+    "notify_style_banner": {"zh_TW": "B · 雙層醒目（預設）", "ko": "B · 강조 카드 (기본)", "en": "B · Bold Card (default)"},
+    "notify_style_sticky": {"zh_TW": "C · 便條貼", "ko": "C · 메모지", "en": "C · Sticky Note"},
+    "notify_style_standard": {"zh_TW": "一般樣式（關閉醒目）", "ko": "일반 (강조 끄기)", "en": "Standard (highlight off)"},
 }
 
 _FITTED_LAYOUT_CACHE: dict[tuple[int, int, int, int, float, int, int], tuple[float, float, int, int]] = {}
@@ -315,6 +321,9 @@ def _sanitize_state(raw: Optional[Mapping[str, Any]]) -> dict[str, Any]:
         merged["sedentary_message"] = sm
     npm = raw.get("notify_privacy_mode")
     merged["notify_privacy_mode"] = npm if type(npm) is bool else False
+    notify_style = raw.get("notify_bubble_style")
+    if isinstance(notify_style, str) and notify_style in VALID_NOTIFY_BUBBLE_STYLES:
+        merged["notify_bubble_style"] = notify_style
     return merged
 
 
@@ -360,7 +369,7 @@ class SettingsPanel:
         self._fonts: dict[tuple[str, int, str], tkfont.Font] = {}
 
         self._design_w = 600
-        self._design_h = 744
+        self._design_h = 812
 
         self.window = tk.Toplevel(parent)
         self.window.withdraw()
@@ -1217,7 +1226,7 @@ class SettingsPanel:
             tags=("btn_preview_sedentary",),
         )
 
-        # Card 4: PET-FIRST Windows Notification Banner Guide + Stream Privacy Mask
+        # Card 4: Windows notification guide, stream privacy and relay bubble style.
         cur_privacy = bool(self.state.get("notify_privacy_mode", False))
         c.create_text(
             24, 556,
@@ -1228,7 +1237,7 @@ class SettingsPanel:
             width=w - 48,
         )
         _draw_round_rect(
-            c, 18, 570, w - 18, 728, r=12,
+            c, 18, 570, w - 18, 798, r=12,
             fill="#ffffff", outline=theme["badge_border"], width=1.2,
         )
         c.create_text(
@@ -1268,7 +1277,7 @@ class SettingsPanel:
         )
 
         c.create_text(
-            30, 708,
+            30, 722,
             text=_pt("privacy_label", self.lang),
             font=self._font(fam, 8, "bold"),
             fill="#444444",
@@ -1276,19 +1285,35 @@ class SettingsPanel:
             width=w - 190,
         )
         _draw_round_rect(
-            c, w - 150, 694, w - 28, 722, r=9,
+            c, w - 150, 708, w - 28, 736, r=9,
             fill=theme["primary"] if cur_privacy else "#e0e0e0",
             outline=theme["primary"] if cur_privacy else "#bdbdbd",
             width=1.2,
             tags=("btn_toggle_privacy",),
         )
         c.create_text(
-            (w - 150 + w - 28) // 2, 708,
+            (w - 150 + w - 28) // 2, 722,
             text=_pt("privacy_on" if cur_privacy else "privacy_off", self.lang),
             font=self._font(fam, 8, "bold"),
             fill="#ffffff" if cur_privacy else "#555555",
             tags=("btn_toggle_privacy",),
         )
+        c.create_text(30, 749, text=_pt("notify_bubble_style", self.lang),
+                      font=self._font(fam, 8, "bold"), fill="#444444", anchor="w",
+                      tags=("notify_style_label",))
+        current_style = self.state["notify_bubble_style"]
+        gap = 8
+        button_w = (w - 60 - 2 * gap) / 3
+        for index, key in enumerate(("banner", "sticky", "standard")):
+            x = 30 + index * (button_w + gap)
+            tag = f"notify_style_option_{key}"
+            selected = current_style == key
+            _draw_round_rect(c, x, 766, x + button_w, 794, r=8,
+                             fill=theme["primary"] if selected else theme["pill_fill"],
+                             outline=theme["primary"], tags=(tag,))
+            c.create_text(x + button_w / 2, 780, text=_pt(f"notify_style_{key}", self.lang),
+                          font=self._font(fam, 8, "bold"),
+                          fill="#ffffff" if selected else theme["accent"], tags=(tag,))
 
     def _apply_notif_guide_cursor(self) -> None:
         guide = getattr(self, "notif_guide", None)
@@ -1380,6 +1405,7 @@ class SettingsPanel:
         "text_size_",
         "standby_clock_",
         "interval_",
+        "notify_style_option_",
         "tab_",
         "btn_",
     )
@@ -1450,6 +1476,8 @@ class SettingsPanel:
             self.open_notif_guide()
         elif tag == "btn_toggle_privacy":
             self.apply_change("notify_privacy_mode", not bool(self.state.get("notify_privacy_mode", False)))
+        elif tag.startswith("notify_style_option_"):
+            self.apply_change("notify_bubble_style", tag.removeprefix("notify_style_option_"))
 
     def _on_drag_begin(self, event: tk.Event) -> None:
         hit = self._interactive_tag_at(event)

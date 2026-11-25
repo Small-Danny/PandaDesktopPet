@@ -380,6 +380,21 @@ class PinkContextMenuTest(unittest.TestCase):
                 clear_item.command()
                 self.assertEqual(cleared, [True])
 
+    def test_notification_style_submenu_localizes_and_checks_one_option(self) -> None:
+        for lang in ("zh_TW", "ko", "en"):
+            with self.subTest(lang=lang):
+                pet = _DummyPet(lang=lang)
+                pet.set_notify_bubble_style = lambda style: pet.settings.update(notify_bubble_style=style)
+                for selected in ("banner", "sticky", "standard", "banner"):
+                    row = next(row for row in build_pet_context_menu_items(pet) if row.tag_id == "row_notif")
+                    submenu = next(item for item in row.submenu if item.label == t("notify_bubble_style", lang))
+                    styles = ("banner", "sticky", "standard")
+                    self.assertEqual([item.label for item in submenu.submenu],
+                                     [t(f"notify_style_{style}", lang) for style in styles])
+                    self.assertEqual([item.checked for item in submenu.submenu],
+                                     [style == selected for style in styles])
+                    submenu.submenu[(styles.index(selected) + 1) % len(styles)].command()
+
     def test_mouse_cursor_submenu_and_selection(self) -> None:
         """The context menu must include custom cursor style selector."""
         selected_cursors = []
@@ -758,7 +773,7 @@ class PinkContextMenuTest(unittest.TestCase):
         area = WorkArea(0, 0, 1920, 1040)
         menu = PinkContextMenu(self.root, items=[MenuItemSpec("Open", submenu=rows)], work_area=area)
         self.addCleanup(menu.close)
-        self.assertEqual(menu.ui_scale, 2.0)
+        self.assertAlmostEqual(menu.ui_scale, 2.0, delta=0.02)
         self.assertGreater(menu._compute_height(rows, include_header=False) * menu.ui_scale, area.height)
         menu.activate_item(0)
         self.root.update()

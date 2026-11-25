@@ -2,14 +2,35 @@
 # PyInstaller build of the portable (no-install) pet:  python -m PyInstaller --noconfirm PandaDesktopPet.spec
 # Output: dist/PandaDesktopPet/PandaDesktopPet.exe + _internal/ (one folder, zip it to share).
 # One-folder rather than one-file: starts faster and unpacks nothing into %TEMP% on every launch.
+import re
 import sys
 from pathlib import Path
 from PIL import Image
+from PyInstaller.utils.win32.versioninfo import (
+    FixedFileInfo, StringFileInfo, StringStruct, StringTable, VarFileInfo, VarStruct, VSVersionInfo,
+)
 
 ROOT = Path(SPECPATH)
 sys.path.insert(0, str(ROOT))
 from tools.build_provenance import write_snapshot  # noqa: E402
 from tools.pack_assets import pack_assets  # noqa: E402
+
+
+def _app_version_info(installer: Path) -> VSVersionInfo:
+    """Use the same release version for Explorer and the installer."""
+    definition = re.search(r'^#define MyAppVersion "(\d+\.\d+\.\d+)"$', installer.read_text(encoding="utf-8-sig"), re.M)
+    if definition is None:
+        raise ValueError(f"MyAppVersion must be a three-part version in {installer}")
+    version = definition.group(1)
+    components = (*map(int, version.split(".")), 0)
+    strings = [StringStruct(key, value) for key, value in (
+        ("FileDescription", "PandaDesktopPet"), ("ProductName", "PandaDesktopPet"),
+        ("FileVersion", version), ("ProductVersion", version), ("OriginalFilename", "PandaDesktopPet.exe"),
+    )]
+    return VSVersionInfo(
+        ffi=FixedFileInfo(filevers=components, prodvers=components, fileType=1),
+        kids=[StringFileInfo([StringTable("040904B0", strings)]), VarFileInfo([VarStruct("Translation", [0x0409, 1200])])],
+    )
 
 
 def _build_app_icon(src_png: Path, dst_ico: Path) -> Path:
@@ -58,6 +79,7 @@ exe = EXE(
     exclude_binaries=True,
     name="PandaDesktopPet",
     icon=str(ico_path),
+    version=_app_version_info(ROOT / "installer" / "PandaDesktopPet.iss"),
     console=False,
     upx=False,          # UPX-packed executables trip antivirus heuristics
 )

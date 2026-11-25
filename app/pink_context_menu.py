@@ -209,7 +209,8 @@ class PinkContextMenu:
         except tk.TclError:
             pass
         self.window.configure(bg=BG_TRANSPARENT)
-        self.ui_scale = ui_scale(self.window)
+        work = self._active_work_area(anchor_x, anchor_y)
+        self.ui_scale = min(ui_scale(self.window), work.width / self._design_w, work.height / self._design_h)
         self.w = round(self._design_w * self.ui_scale)
         self.h = round(self._design_h * self.ui_scale)
 
@@ -226,7 +227,6 @@ class PinkContextMenu:
         self._row_bounds: list[tuple[int, int, int]] = []
         self._sub_row_bounds: list[tuple[int, int, int]] = []
 
-        work = self._active_work_area(anchor_x, anchor_y)
         cx, cy = work.clamp(anchor_x, anchor_y, self.w, self.h)
         self._render_main()
         self._move_window(self.window, cx, cy, self.w, self.h, is_sub=False)
@@ -1458,11 +1458,18 @@ def build_pet_context_menu_items(pet: Any) -> list[MenuItemSpec]:
     privacy_on = bool(settings.get("notify_privacy_mode", False))
     notif_relay_on = bool(settings.get("notify_relay", True))
     privacy_cmd = getattr(pet, "toggle_notify_privacy", None) or getattr(pet, "toggle_notify_privacy_mode", None)
+    notify_style = settings.get("notify_bubble_style", "banner")
+    notify_styles = [
+        MenuItemSpec(t(f"notify_style_{key}", lang), lambda key=key: pet.set_notify_bubble_style(key),
+                     checked=(notify_style == key))
+        for key in ("banner", "sticky", "standard")
+    ]
     notif_sub = [
         MenuItemSpec(f"{t('notif_drawer_menu', lang)} ({drawer_badge})", getattr(pet, "open_notification_drawer", None)),
         MenuItemSpec(t("notif_drawer_clear_menu", lang), getattr(pet, "clear_recent_notifications", None)),
         MenuItemSpec(t("notify_privacy_toggle", lang), privacy_cmd, checked=privacy_on),
         MenuItemSpec(t("notify_relay", lang), getattr(pet, "toggle_notify_relay", None), checked=notif_relay_on),
+        MenuItemSpec(t("notify_bubble_style", lang), submenu=notify_styles),
     ]
 
     # 6. Mouse Cursor Styles Submenu

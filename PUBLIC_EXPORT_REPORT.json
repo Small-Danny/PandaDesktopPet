@@ -36,7 +36,7 @@
     {
       "path": "PandaDesktopPet.spec",
       "source_path": "PandaDesktopPet.spec",
-      "sha256": "764627b6576404b6644456a67edbf0904092cec1fe92d9250cbc9294c7ddc1a4"
+      "sha256": "5ba2f25250bc115e55f54d0fa3076d6fcdf7c88ed56d448b1f9d91ca3dcc3e8a"
     },
     {
       "path": "README.md",
@@ -76,7 +76,7 @@
     {
       "path": "app/bubble.py",
       "source_path": "app/bubble.py",
-      "sha256": "7dbf946d142fac5354779122457eb58ca18c1c6ae5cdd89f8023e118a088e662"
+      "sha256": "deade56933c8bb928a8d3df9a49bd1c4f269333e599e9e1a02686ba9f8c5ad71"
     },
     {
       "path": "app/bubble_art.py",
@@ -206,12 +206,12 @@
     {
       "path": "app/i18n.py",
       "source_path": "app/i18n.py",
-      "sha256": "780604724641073d495fce10b2ed6ec6698b4194f20f53350d51cb9c89e5b4ec"
+      "sha256": "c752275c45546583f9f2e0638c3fe7a5d11d05f498aab591e5c4156004a22f45"
     },
     {
       "path": "app/main.py",
       "source_path": "app/main.py",
-      "sha256": "6bce1e458d73f96319381912d57ed28d471d99592c7dcc0b2ccb5b1db8aa1cdb"
+      "sha256": "3677a0bacb79dc5face71af5348915e91caed88eadccfef47c61789034b50f61"
     },
     {
       "path": "app/new_year_countdown.py",
@@ -241,7 +241,7 @@
     {
       "path": "app/pink_context_menu.py",
       "source_path": "app/pink_context_menu.py",
-      "sha256": "00fba5a55ac5523e7e8758bc4bc8d74501c020004b7e94385c3bb64cc5bb6359"
+      "sha256": "7af84d648e16a8e5632fbf8e9322308b15faaaf5478e8ac99158b554653aab17"
     },
     {
       "path": "app/platform/__init__.py",
@@ -271,7 +271,7 @@
     {
       "path": "app/settings_panel.py",
       "source_path": "app/settings_panel.py",
-      "sha256": "ca352f1a1cd2529d68343141487f90d6eff977661408d7b56343f1eae94f42d7"
+      "sha256": "a29a011e9863cf028a7cccc6afc21f3498fbac1df6a80469e03cadfe6f24c3db"
     },
     {
       "path": "app/sprite_polish.py",
@@ -301,7 +301,7 @@
     {
       "path": "app/storage/settings.py",
       "source_path": "app/storage/settings.py",
-      "sha256": "e1c37b69cc219a8470d99a9a235767b8979677b7127e9b40a4c121be76aceda2"
+      "sha256": "c9781726f298356853296cf4c6b3a17387d0e94689d3c9ef1d464f4628d5c0d1"
     },
     {
       "path": "app/tools/__init__.py",
@@ -356,7 +356,7 @@
     {
       "path": "installer/PandaDesktopPet.iss",
       "source_path": "installer/PandaDesktopPet.iss",
-      "sha256": "619b014851d9957e3abb95d580f86c356d40f134caacc6700da1be52d9ed0e9d"
+      "sha256": "261926eb5dec4519dbb8a56b7b0216f1a1b20b2030bcc805a89ecc8c9c2ab8f6"
     },
     {
       "path": "requirements-build.txt",
@@ -636,17 +636,17 @@
     {
       "path": "asset_tests/test_long_notification_bubble.py",
       "source_path": "tests/test_long_notification_bubble.py",
-      "sha256": "dd63ca105510190cc839cad22d85970b7819e6023349a424c13a751be82ee877"
+      "sha256": "af60e9bba4e466a2a24aa2d86cb0077316632690084ce82b1c2d2463559e810b"
     },
     {
       "path": "asset_tests/test_notification_queue.py",
       "source_path": "tests/test_notification_queue.py",
-      "sha256": "b77260a9676006d7ebb91e5e24bb3ea2aaf835a94fb30ba148917c0a18a53813"
+      "sha256": "fda0736a3fa71e85a4be61f04229377aaf04ef2047d1d6d52cc7e1ad420136bb"
     },
     {
       "path": "tests/test_persistence_service.py",
       "source_path": "tests/test_persistence_service.py",
-      "sha256": "669ad7855d95213fe79ace3cc09086649d05c6bc41f4d23bac6f91359508a40c"
+      "sha256": "344f14f506ac08dba285d859b8e7a282a0d68c7f139b20e4716965f690f67909"
     },
     {
       "path": "asset_tests/test_pet_lifecycle.py",
@@ -656,7 +656,7 @@
     {
       "path": "asset_tests/test_pink_context_menu.py",
       "source_path": "tests/test_pink_context_menu.py",
-      "sha256": "1d7b3bd5b1f401e69f0a97470a6a8f728ace37864b4b68babf92ee682388a9c2"
+      "sha256": "3da33563bca1b24df424da0ed49f8365d828c85ad433b04b8f97f63ab8e22089"
     },
     {
       "path": "asset_tests/test_policy_blacklist_guard.py",
@@ -716,12 +716,12 @@
     {
       "path": "asset_tests/test_settings_apply.py",
       "source_path": "tests/test_settings_apply.py",
-      "sha256": "df6f2cf4ac3cc921a83d2f51cb7fdd6b19f8221b647b60086e7d4f0b637ecb1b"
+      "sha256": "0a9b2b4f0434b605bf6f0089e523a007953c832acb7c4c2d5237d8bcdace51fe"
     },
     {
       "path": "tests/test_settings_panel.py",
       "source_path": "tests/test_settings_panel.py",
-      "sha256": "b812629af953ecba5880642427eef9c63f084cd25ca8f67a83cdbfa19dca7d86"
+      "sha256": "816eb6bd57535fdc371e6c8742a320936d76c3f4c5e6e69d9462113b9444ae33"
     },
     {
       "path": "asset_tests/test_settings_wiring.py",
@@ -841,7 +841,7 @@
     {
       "path": "tools/build_provenance.py",
       "source_path": "tools/build_provenance.py",
-      "sha256": "4092e26971659dcd19447a422112588410fdae181e5801cdd9871281cb551506"
+      "sha256": "1658ab6032f9dbb6b7e9d814be4c132938c843a61910bad2320b9e4cfcbb8f93"
     },
     {
       "path": "tools/clean_edge_fringe.py",

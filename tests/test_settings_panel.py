@@ -132,6 +132,17 @@ class SettingsPanelTest(unittest.TestCase):
         self.assertTrue(panel.apply_change("hourly_chime", False))
         self.assertFalse(panel.state["hourly_chime"])
 
+        for style in ("sticky", "standard", "banner"):
+            box = panel.canvas.bbox(f"notify_style_option_{style}")
+            xy = {"x": (box[0] + box[2]) // 2, "y": (box[1] + box[3]) // 2}
+            panel.window.update()
+            panel.canvas.event_generate("<ButtonPress-1>", **xy)
+            panel.canvas.event_generate("<ButtonRelease-1>", **xy)
+            self.assertEqual(changes[-1], ("notify_bubble_style", style))
+            self.assertEqual(panel.state["notify_bubble_style"], style)
+        panel.refresh(state=dict(store, notify_bubble_style=[]))
+        self.assertEqual(panel.state["notify_bubble_style"], "banner")
+
         # Preview reminder
         self.assertTrue(panel.trigger_preview("sedentary"))
         self.assertEqual(previews, ["sedentary"])
@@ -245,6 +256,20 @@ class SettingsPanelTest(unittest.TestCase):
                         d_box = panel.canvas.bbox("pet_first_desc")
                         p_box = panel.canvas.bbox("btn_toggle_privacy")
                         self.assertLess(d_box[3], p_box[1], (dpi, lang, d_box, p_box))
+                        label_box = panel.canvas.bbox("notify_style_label")
+                        self.assertLess(p_box[3], label_box[1], (dpi, lang, p_box, label_box))
+                        previous_right = 0
+                        for style in ("banner", "sticky", "standard"):
+                            tag = f"notify_style_option_{style}"
+                            background, text = panel.canvas.find_withtag(tag)
+                            left, top, right, bottom = panel.canvas.bbox(background)
+                            tx0, ty0, tx1, ty1 = panel.canvas.bbox(text)
+                            self.assertLess(previous_right, left, (dpi, lang, style))
+                            self.assertLess(label_box[3], top, (dpi, lang, style))
+                            self.assertTrue(left < tx0 < tx1 < right and top < ty0 < ty1 < bottom,
+                                            (dpi, lang, style, panel.canvas.bbox(text)))
+                            self.assertLess(bottom, panel.h, (dpi, lang, style))
+                            previous_right = right
                     for item in panel.canvas.find_all():
                         if panel.canvas.type(item) == "text":
                             x1, y1, x2, y2 = panel.canvas.bbox(item)

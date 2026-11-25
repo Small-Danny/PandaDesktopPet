@@ -44,6 +44,8 @@ from PIL import Image, ImageChops  # noqa: E402
 
 from app.bubble import RESUME_MIN_MS, KawaiiSpeechBubble, effective_duration_ms  # noqa: E402
 from app.bubble_themes import THEMES  # noqa: E402
+from app.i18n import t  # noqa: E402
+from app.platform.win32 import WorkArea  # noqa: E402
 from app.sprite_polish import alpha_bleed, defringe_light_frame  # noqa: E402
 
 ORNAMENT_DIST = 60         # RGB distance from the card interior colour = ornament / border
@@ -325,6 +327,78 @@ class NotificationBehaviourTest(unittest.TestCase):
         self.assertEqual(effective_duration_ms("字" * 500, 4200), 10000)
         self.assertEqual(effective_duration_ms("字" * 500, 15000), 15000)   # never shortened
         self.assertEqual(effective_duration_ms("a " * 80, 4200), 4200)      # spaces don't count
+
+    def test_relay_styles_fit_safe_area_and_scroll_at_96_and_192_dpi(self) -> None:
+        scaling = self.root.tk.call("tk", "scaling")
+        self.addCleanup(self.root.tk.call, "tk", "scaling", scaling)
+        area = WorkArea(0, 0, 1366, 728)
+        desktop = mock.Mock()
+        desktop.work_area_for_point.return_value = area
+        for dpi in (96, 192):
+            self.root.tk.call("tk", "scaling", dpi / 72)
+            for theme_key in ("classic", "chorong_pink"):
+                for lang in HEADERS:
+                    for style in ("banner", "sticky", "standard"):
+                        for long in (False, True):
+                            with self.subTest(dpi=dpi, theme=theme_key, lang=lang, style=style, long=long):
+                                message = (BASE[lang][:14] + "\r\n" + messages(lang)["very_long"] if long else
+                                           t("windows_notif_privacy_msg", lang, app="Teams"))
+                                chip = t("windows_notif_badge", lang)
+                                bubble = KawaiiSpeechBubble(
+                                    self.root, 600, 580, 144, HEADERS[lang], message,
+                                    desktop=desktop, theme=THEMES[theme_key], duration_ms=60_000,
+                                    sub_badge=f"{t('windows_notif_header', lang, app='Teams')}｜{chip}",
+                                    notify_style=style, notify_tag=t("notify_sticky_tag", lang),
+                                )
+                                try:
+                                    self.root.update()
+                                    self._check_relay_layout(bubble, area, dpi, theme_key, style, long)
+                                    outer_text = [bubble.canvas.itemcget(i, "text") for i in bubble.canvas.find_all()
+                                                  if bubble.canvas.type(i) == "text"]
+                                    self.assertIn(chip, outer_text)
+                                finally:
+                                    bubble.dismiss()
+
+    def _check_relay_layout(self, bubble, area, dpi, theme_key, style, long) -> None:
+        canvas, message = bubble.canvas, bubble.message_canvas
+        self.assertAlmostEqual(bubble.ui_scale, dpi / 96, delta=0.02)
+        self.assertEqual(bubble.card_image is not None, theme_key != "classic")
+        self.assertEqual(bool(canvas.find_withtag("notify_badge")), style == "banner")
+        self.assertEqual(bool(message.find_withtag("lead_band")), style == "banner" and long)
+        self.assertEqual(bool(canvas.find_withtag("sticky_tag")), style == "sticky")
+        self.assertEqual(bool(message.find_withtag("sticky_fold")), style == "sticky")
+        if long:
+            self.assertTrue(bubble.scrollable)
+        bx, by = bubble.target_position
+        self.assertLessEqual(bx + bubble.width, area.right)
+        self.assertLessEqual(by + bubble.height, area.bottom)
+        viewport = next(i for i in canvas.find_all() if canvas.type(i) == "window"
+                        and canvas.itemcget(i, "window") == str(message))
+        boxes = [canvas.bbox(viewport)]
+        boxes.extend(canvas.bbox(tag) for tag in ("sticky_tag", "notify_badge") if canvas.find_withtag(tag))
+        if bubble.card_image is not None:
+            ox, oy = bubble.card_origin
+            w, h = bubble.card_image.size
+            geometry = bubble.frame.geometry(w, 0)
+            x0, y0, x1, y1 = geometry.safe
+            safe = (ox + x0, oy + y0, ox + x1, oy + y1 + h - geometry.height)
+        else:
+            safe = (0, 0, bubble.width, bubble.height)
+        for x0, y0, x1, y1 in boxes:
+            self.assertTrue(safe[0] - 1 <= x0 < x1 <= safe[2] + 1 and safe[1] <= y0 < y1 <= safe[3],
+                            (safe, (x0, y0, x1, y1)))
+        text_boxes = [message.bbox(i) for i in message.find_all() if message.type(i) in ("text", "image")]
+        viewport_width = message.winfo_width()
+        text_bottom = max(box[3] for box in text_boxes)
+        self.assertTrue(all(0 <= box[0] < box[2] <= viewport_width for box in text_boxes))
+        if bubble.scrollable:
+            message.event_generate("<MouseWheel>", delta=-120)
+            self.assertGreater(message.yview()[0], 0)
+            message.yview_moveto(1)
+            self.assertEqual(message.yview()[1], 1)
+        self.assertLessEqual(text_bottom, message.canvasy(message.winfo_height()))
+        if style == "sticky":
+            self.assertLess(text_bottom, message.bbox("sticky_fold")[1])
 
     def test_hover_pauses_and_leave_resumes(self) -> None:
         for theme in ("classic", "hayoung_yellow"):

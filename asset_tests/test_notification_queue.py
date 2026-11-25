@@ -188,6 +188,34 @@ class PetRelayTest(unittest.TestCase):
         self.pet.toggle_notify_privacy()
         self.assertIs(self.store.load()[0]["notify_privacy_mode"], False)
 
+    def test_relay_uses_reloaded_style_and_quotes_use_standard(self) -> None:
+        from app.main import PandaPet
+
+        pet = self.pet
+        self.assertEqual(pet.settings_state()["notify_bubble_style"], "banner")
+        for style, privacy in (("banner", False), ("sticky", True), ("standard", False)):
+            with self.subTest(style=style), mock.patch.object(pet, "trigger_cheer"):
+                self.assertTrue(pet.apply_setting("notify_bubble_style", style))
+                pet.settings, _ = pet.load_settings()
+                self.assertEqual(pet.settings_state()["notify_bubble_style"], style)
+                pet.settings["notify_privacy_mode"] = privacy
+                pet.speech.clear()
+                pet.relay_notifications(ITEMS[:1])
+                request = self.shown[-1]
+                self.assertEqual(request.kind, "notify.relay")
+                PandaPet._render_bubble(pet, request)
+                bubble = pet.active_bubble
+                self.assertEqual(bubble.notify_style, style)
+                self.assertEqual(bubble.notify_tag, t("notify_sticky_tag", pet.lang))
+                if privacy:
+                    self.assertNotIn("\n", bubble.message)
+                    self.assertNotIn(ITEMS[0]["title"], bubble.message)
+                    self.assertNotIn(ITEMS[0]["body"], bubble.message)
+                pet.speech.clear()
+                pet._toast("Quote", kind="quote")
+                PandaPet._render_bubble(pet, self.shown[-1])
+                self.assertEqual(pet.active_bubble.notify_style, "standard")
+
     def test_relay_off_does_not_poll(self) -> None:
         self.pet.settings["notify_relay"] = False
         with mock.patch.object(self.pet.notif_monitor, "check_new_notifications") as check:
